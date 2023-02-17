@@ -1,1 +1,4 @@
 TODO(Checkpoint Requirement 1 of 3): Add team member names and emails.
+Aramide Ogundiran <aramide_ogundiran@techexchnage.in>
+Gabriel Terrazas  <gabriel_terrazas@techexchnage.in>
+Julian Pacheco    <jpacheco15@techexchange.in>
