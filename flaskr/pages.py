@@ -10,7 +10,22 @@ def make_endpoints(app):
         # TODO(Checkpoint Requirement 2 of 3): Change this to use render_template
         # to render main.html on the home page.
         return render_template("main.html")
+    # Pages
+    @app.route("/Chicken_Tamales")
+    def Chicken_Tamales():
+        return render_template("Chicken_Tamales.html")
+    @app.route("/Green_Chicken_Enchiladas")
+    def Green_Chicken_Enchiladas():
+        return render_template("Green_Chicken_Enchiladas.html")
+    @app.route("/Huevos_Rancheros")
+    def Huevos_Rancheros():
+        return render_template("Huevos_Rancheros.html")
+    @app.route("/Molletes")
+    def Molletes():
+        return render_template("Molletes.html")
+    # End Pages
 
+    # Sign up
     @app.route("/sign_up")
     def sign_up():
         return render_template("sign_up.html")
