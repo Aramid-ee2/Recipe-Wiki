@@ -13,7 +13,8 @@ class Backend:
     def upload(self):
         pass
 
-    def sign_up(self):
+    def sign_up(self, user_name, password):
+        # Reach out to GCS and create user with username and password
         pass
 
     def sign_in(self):

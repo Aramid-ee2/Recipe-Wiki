@@ -11,4 +11,8 @@ def make_endpoints(app):
         # to render main.html on the home page.
         return render_template("main.html")
 
-    # TODO(Project 1): Implement additional routes according to the project requirements.
+    @app.route("/sign_up")
+    def sign_up():
+        return render_template("sign_up.html")
+        # If the request is a Get, then return the page
+        # If the request is a Post, get username and password from the request and pass it to backend class
