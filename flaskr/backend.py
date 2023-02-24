@@ -23,7 +23,8 @@ class Backend:
         blob = self.users_bucket.blob(user_name)
         with blob.open("w") as f:
             # TODO: add prefix and hash password
-            f.write(password)
+            password = "protection" + password
+            f.write(password.hash())
         
     def sign_in(self):
         pass
