@@ -1,6 +1,7 @@
 # TODO(Project 1): Implement Backend according to the requirements.
 # To be able to access the bucket
 from google.cloud import storage
+import hashlib
 class Backend:
 
     def __init__(self):
@@ -24,7 +25,7 @@ class Backend:
         with blob.open("w") as f:
             # TODO: add prefix and hash password
             password = "protection" + password
-            f.write(password.hash())
+            f.write(hashlib.sha256(password).hexdigest())
         
     def sign_in(self):
         pass
