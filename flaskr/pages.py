@@ -33,7 +33,7 @@ def make_endpoints(app, backend,logging):
     def upload():
         # Fix Post 
         if request.method == "POST":
-            pass
+            backend.upload(request.form['filename'])
         # If the request is a Get, return upload page
         else:
             return render_template("upload.html")
