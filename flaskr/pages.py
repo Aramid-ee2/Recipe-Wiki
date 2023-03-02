@@ -19,7 +19,7 @@ def make_endpoints(app, backend,logging):
         # Returns a different page depending on the page_id input
         return render_template("{}.html".format(page_id))
 
-    # Sign up
+    # Sign up Route
     @app.route("/sign_up" , methods=['GET', 'POST'])
     def sign_up():
         # If the request is a Post, get username and password from the request and pass it to backend class
@@ -28,3 +28,12 @@ def make_endpoints(app, backend,logging):
         # If the request is a Get, then return the page
         else:
             return render_template("sign_up.html")
+    # Upload Route
+    @app.route("/upload" , methods = ["GET" , "POST"])
+    def upload():
+        # Fix Post 
+        if request.method == "POST":
+            pass
+        # If the request is a Get, return upload page
+        else:
+            return render_template("upload.html")
