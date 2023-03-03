@@ -18,7 +18,6 @@ def make_endpoints(app, backend,logging):
     def get_page(page_id):
         # Returns a different page depending on the page_id input
         return render_template("{}.html".format(page_id))
-
     # Sign up
     @app.route("/sign_up" , methods=['GET', 'POST'])
     def sign_up():
