@@ -1,14 +1,10 @@
 <!DOCTYPE html>
 <html>
     <body>
-
-        <h1>Please upload a file:</h1>
-        <br>
-
+        {% include 'navigation_bar.html' %}
+        <h1>Upload a file:</h1>
         <form method="post" action="/upload" enctype="multipart/form-data">
             <input type="file" id="myFile" name="file" required>
-            <br>
-            <br>
             <input type="submit">
         </form>
 
