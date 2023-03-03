@@ -2,10 +2,13 @@
 <html>
     <body>
 
-        <center>Please upload a file:</center>
+        <h1>Please upload a file:</h1>
+        <br>
 
-        <form method="post" action="/upload">
-            <input type="file" id="myFile" name="filename" required>
+        <form method="post" action="/upload" enctype="multipart/form-data">
+            <input type="file" id="myFile" name="file" required>
+            <br>
+            <br>
             <input type="submit">
         </form>
 

@@ -12,13 +12,12 @@ def make_endpoints(app, backend,logging):
     # Home Page Route
     @app.route("/home")
     def home():
-        return render_template("home.html")        
+        return render_template("home.html")       
     # Pages Route
     @app.route("/pages/<page_id>")
     def get_page(page_id):
         # Returns a different page depending on the page_id input
         return render_template("{}.html".format(page_id))
-
     # Sign up Route
     @app.route("/sign_up" , methods=['GET', 'POST'])
     def sign_up():
@@ -33,7 +32,6 @@ def make_endpoints(app, backend,logging):
     def upload():
         # Fix Post 
         if request.method == "POST":
-            backend.upload(request.form['filename'])
-        # If the request is a Get, return upload page
-        else:
-            return render_template("upload.html")
+            backend.upload(request.files['file'])
+        # TODO: Redirect user to home page after uploading a file
+        return render_template("upload.html")
