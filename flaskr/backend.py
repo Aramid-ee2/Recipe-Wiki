@@ -16,14 +16,17 @@ class Backend:
     def get_all_page_names(self):
         pass
 
-    def upload(self):
-        pass
+    def upload(self, file):
+        # File.filename returns name of the file
+        blob = self.wiki_info_bucket.blob(file.filename)
+        # Upload actual file to bucket
+        blob.upload_from_file(file, content_type=file.content_type)
 
     def sign_up(self, user_name, password):
         # Reach out to GCS and create user_name file that contains the password
         blob = self.users_bucket.blob(user_name)
         with blob.open("w") as f:
-            # TODO: add prefix and hash password
+            # Add prefix and hash password
             password = "protection" + password
             f.write(hashlib.sha256(password).hexdigest())
         
