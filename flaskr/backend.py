@@ -30,9 +30,19 @@ class Backend:
             password = "protection" + password
             f.write(hashlib.sha256(password).hexdigest())
         
-    def sign_in(self):
-        pass
 
+    def sign_in(self, username, password):
+        #Checks if hashed password matches password in bucket 
+        blob = self.users_bucket.blob(username)
+        password = "protection" + password
+        password = hashlib.blake2b(password.encode()).hexdigest()
+        with blob.open("r") as f:
+            data = f.read()
+            if data != password:
+                return False
+            return True
+
+        
     def get_image(self):
         pass
 

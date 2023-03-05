@@ -1,6 +1,8 @@
 # Imported request to be able to acces info returned from inputs
-from flask import render_template, request
-def make_endpoints(app, backend,logging):
+from flask import render_template, request, url_for
+from flaskr.login import User
+
+def make_endpoints(app, backend,logging, ):
     # Flask uses the "app.route" decorator to call methods when users
     # go to a specific route on the project's website.
     # Default route
@@ -35,3 +37,18 @@ def make_endpoints(app, backend,logging):
             backend.upload(request.files['file'])
         # TODO: Redirect user to home page after uploading a file
         return render_template("upload.html")
+
+    @app.route("/pages")
+    def pages():
+        pass
+
+    
+    @app.route("/log_in", methods = ["GET", "POST"])
+    def login():
+    #Get what user puts into the form which is username and password
+    #Call backend.signin to check valid details
+    #Create an instance of the class user
+    #Login_user(user)
+    #render the html
+        pass
+
