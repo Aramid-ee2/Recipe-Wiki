@@ -25,6 +25,7 @@ class Backend:
     def sign_up(self, user_name, password):
         # Reach out to GCS and create user_name file that contains the password
         blob = self.users_bucket.blob(user_name)
+        #TODO: Add username to password hash so different users with same password get different hash value
         with blob.open("w") as f:
             # Add prefix and hash password
             password = "protection" + password
