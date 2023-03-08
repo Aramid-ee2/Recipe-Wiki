@@ -14,7 +14,7 @@ def make_endpoints(app, backend,logging, ):
     # Home Page Route
     @app.route("/")
     def home():
-        return render_template("home.html")       
+        return render_template("navigation_bar.html")       
     # Pages Route
     @app.route("/pages/<page_id>")
     def get_page(page_id):
@@ -42,8 +42,8 @@ def make_endpoints(app, backend,logging, ):
     def about():
         authors = [
         {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
-        {"Gabriel Terrazas", "Author 2": "gabe.jpg"},
-        {"Julian Pacheco", "Author 3": "julian.jpg"}
+        {"Gabriel Terrazas": "Author 2": "gabe.jpg"},
+        {"Julian Pacheco": "Author 3": "julian.jpg"}
         ]
         for author in authors:
             author["image_url"] = backend.get_image(author["image"])
