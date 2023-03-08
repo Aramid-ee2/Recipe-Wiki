@@ -1,5 +1,6 @@
 from flaskr import backend, pages
 from flask import Flask
+from google.cloud import storage
 #from flask_login import LoginManager, login_user
 
 import logging
@@ -12,7 +13,7 @@ def create_app(test_config=None):
     # Create and configure the app.
     app = Flask(__name__, instance_relative_config=True,)
     # Create backend class
-    backend_instance = backend.Backend()
+    backend_instance = backend.Backend(storage.Client())
     # This is the default secret key used for login sessions
     # By default the dev environment uses the key 'dev'
     app.config.from_mapping(

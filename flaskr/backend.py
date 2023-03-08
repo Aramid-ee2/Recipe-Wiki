@@ -4,8 +4,7 @@ from google.cloud import storage
 import hashlib
 class Backend:
 
-    def __init__(self):
-        storage_client = storage.Client()
+    def __init__(self, storage_client):
         # Initialize access to both buckets
         self.users_bucket = storage_client.bucket('users_project1')
         self.wiki_info_bucket = storage_client.bucket('wiki_info_project1')
