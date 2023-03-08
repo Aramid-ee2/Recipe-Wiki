@@ -42,8 +42,8 @@ def make_endpoints(app, backend,logging, ):
     def about():
         authors = [
         {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
-        {"Gabriel Terrazas": "Author 2": "gabe.jpg"},
-        {"Julian Pacheco": "Author 3": "julian.jpg"}
+        {"Gabriel Terrazas": "Author 2","image": "gabe.jpg"},
+        {"Julian Pacheco": "Author 3","image": "julian.jpg"}
         ]
         for author in authors:
             author["image_url"] = backend.get_image(author["image"])
