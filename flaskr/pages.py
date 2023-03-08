@@ -14,7 +14,7 @@ def make_endpoints(app, backend,logging, ):
     # Home Page Route
     @app.route("/")
     def home():
-        return render_template("home.html")       
+        return render_template("navigation_bar.html")       
     # Pages Route
     @app.route("/pages/<page_id>")
     def get_page(page_id):
