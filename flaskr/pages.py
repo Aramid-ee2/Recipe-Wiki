@@ -1,5 +1,5 @@
 # Imported request to be able to acces info returned from inputs
-from flask import render_template, request, url_for
+from flask import Flask, render_template, request, url_for, session
 from flaskr.login import User
 
 def make_endpoints(app, backend,logging, ):
@@ -12,7 +12,7 @@ def make_endpoints(app, backend,logging, ):
         logging.info("Someone hit the Main Page")
         return render_template("main.html")
     # Home Page Route
-    @app.route("/home")
+    @app.route("/")
     def home():
         return render_template("home.html")       
     # Pages Route
@@ -37,7 +37,23 @@ def make_endpoints(app, backend,logging, ):
             backend.upload(request.files['file'])
         # TODO: Redirect user to home page after uploading a file
         return render_template("upload.html")
-
+    # About Route
+    @app.route('/about')
+    def about():
+        authors = [
+        {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
+        {"Gabriel Terrazas", "Author 2": "gabe.jpg"},
+        {"Julian Pacheco", "Author 3": "julian.jpg"}
+        ]
+        for author in authors:
+            author["image_url"] = backend.get_image(author["image"])
+        return render_template("about.html", authors=authors)
+    @app.route('/logout')
+    def logout():
+        if 'username' in session:
+            session.pop('username')
+        return redirect('/')
+    
     @app.route("/pages")
     def pages():
         pass
