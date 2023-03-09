@@ -4,6 +4,9 @@ from google.cloud import storage
 import hashlib
 class Backend:
 
+    # Class prefix variable
+    SALT = "Heqodap12"
+
     def __init__(self, storage_client):
         # Initialize access to both buckets
         self.users_bucket = storage_client.bucket('users_project1')
@@ -24,17 +27,16 @@ class Backend:
     def sign_up(self, user_name, password):
         # Reach out to GCS and create user_name file that contains the password
         blob = self.users_bucket.blob(user_name)
-        #TODO: Add username to password hash so different users with same password get different hash value
+        # Add prefix and hash password
         with blob.open("w") as f:
-            # Add prefix and hash password
-            password = "protection" + password
-            f.write(hashlib.sha256(password).hexdigest())
-        
+            #Add username to password hash so different users with same password get different hash value
+            encoded = self.SALT + user_name + password
+            f.write(hashlib.sha256(encoded.encode()).hexdigest())  
 
     def sign_in(self, username, password):
         #Checks if hashed password matches password in bucket 
         blob = self.users_bucket.blob(username)
-        password = "protection" + password
+        password = self.SALT + password
         password = hashlib.blake2b(password.encode()).hexdigest()
         with blob.open("r") as f:
             data = f.read()
