@@ -1,6 +1,6 @@
 <nav>
   <ul>
-    <li><a href="{{ url_for('home') }}">Home</a></li>
+    <li><a href="{{ url_for('main') }}">Main</a></li>
     <li><a href="{{ url_for('pages') }}">Pages</a></li>
     <li><a href="{{ url_for('about') }}">About</a></li>
     {% if 'username' in session %}
@@ -8,7 +8,7 @@
       <li><a href="{{ url_for('logout') }}">Logout</a></li>
     {% else %}
       <li><a href="{{ url_for('login') }}">Login</a></li>
-      <li><a href="{{ url_for('signup') }}">Signup</a></li>
+      <li><a href="{{ url_for('sign_up') }}">Signup</a></li>
     {% endif %}
   </ul>
 </nav>

@@ -10,11 +10,11 @@ def make_endpoints(app, backend,logging, ):
     def main():
         # TODO: Log test
         logging.info("Someone hit the Main Page")
-        return render_template("main.html")
+        return render_template("main.html")    
     # Home Page Route
-    @app.route("/")
+    @app.route("/home")
     def home():
-        return render_template("navigation_bar.html")       
+        return render_template("home.html")       
     # Pages Route
     @app.route("/pages/<page_id>")
     def get_page(page_id):
@@ -35,7 +35,7 @@ def make_endpoints(app, backend,logging, ):
         # Fix Post 
         if request.method == "POST":
             backend.upload(request.files['file'])
-        # TODO: Redirect user to home page after uploading a file
+        # Redirect user to home page after uploading a file
         return render_template("upload.html")
     # About Route
     @app.route('/about')
