@@ -4,11 +4,14 @@
 <head>
     <head>
         <!-- TODO(Checkpoint Requirement 3): Change the title and content of your wiki.-->
-        <title>The three engineers Wiki</title>
+        <title>{% block page_name %} 
+
+        {% endblock %}
+    </title>
     </head>
 </head>
 
-<body>
+<body> {% block content %}
     {% include 'navigation_bar.html' %}
     <!-- TODO(Project 1): Implement routes. -->
     <div>       
@@ -20,6 +23,7 @@
         Julian Pacheco
         <br>
     </div>
+    {% endblock %}
 </body>
 
 </html>
