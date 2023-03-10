@@ -1,11 +1,12 @@
 from flaskr import backend, pages
 from flask import Flask
 from google.cloud import storage
-#from flask_login import LoginManager, login_user
+from flask_login import LoginManager, login_user
+from flaskr.login import User
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
-
+login_manager = LoginManager()
 # The flask terminal command inside "run-flask.sh" searches for
 # this method inside of __init__.py (containing flaskr module 
 # properties) as we set "FLASK_APP=flaskr" before running "flask".
@@ -31,7 +32,12 @@ def create_app(test_config=None):
     # TODO(Project 1): Make additional modifications here for logging in, backends
     # and additional endpoints.
     pages.make_endpoints(app, backend_instance,logging)
+    
+    login_manager.init_app(app)
 
-    # login_manager = LoginManager()
-    # login_manager.init_app(app)
+
     return app
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)

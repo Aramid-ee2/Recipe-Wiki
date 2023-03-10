@@ -1,6 +1,8 @@
-
+from flask_login import LoginManager, login_user
 import hashlib
 from flaskr.backend import Backend 
+
+
 
 class User:
     def __init__(self, username):
@@ -20,4 +22,5 @@ class User:
 
     def get_id(self):
         return f"{self.username}"
+
 

@@ -8,15 +8,32 @@ class Backend:
     SALT = "Heqodap12"
 
     def __init__(self, storage_client):
+        self.storage_client = storage.Client()
         # Initialize access to both buckets
-        self.users_bucket = storage_client.bucket('users_project1')
-        self.wiki_info_bucket = storage_client.bucket('wiki_info_project1')
+        self.users_bucket = self.storage_client.bucket('users_project1')
+        self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')  
+        self.authors_buckets = self.storage_client.bucket("recipe_authors")      
+       
         
     def get_wiki_page(self, name):
-        pass
+        blobs = self.storage_client.list_blobs("wiki_info_project1")
+        for blob in blobs:
+            if blob.name == name:
+                with blob.open("r") as f:
+                    data = f.read()
+                    return data
+       
 
     def get_all_page_names(self):
-        pass
+        #self.storage_client.list_blobs("wiki_info_project1")
+    
+        blobs = self.storage_client.list_blobs("wiki_info_project1")
+        page_names = []
+        for blob in blobs:
+            page_names.append(blob.name)
+        return page_names
+
+        
 
     def upload(self, file):
         # File.filename returns name of the file
@@ -33,11 +50,12 @@ class Backend:
             encoded = self.SALT + user_name + password
             f.write(hashlib.sha256(encoded.encode()).hexdigest())  
 
-    def sign_in(self, username, password):
+    def sign_in(self, user_name, password):
         #Checks if hashed password matches password in bucket 
-        blob = self.users_bucket.blob(username)
-        password = self.SALT + password
-        password = hashlib.blake2b(password.encode()).hexdigest()
+        blob = self.users_bucket.blob(user_name)
+        #TODO: Check if hashing is done properly
+        password = f"{user_name} protection {password}"
+        password = hashlib.sha256(password.encode()).hexdigest()
         with blob.open("r") as f:
             data = f.read()
             if data != password:
@@ -45,6 +63,12 @@ class Backend:
             return True
 
         
-    def get_image(self):
-        pass
-
+    def get_image(self, name):
+        #TODO: Get image of teammates and display in about page, get_image gets the image data from bucket and send it to frontend
+        blob = self.storage_client.list_blobs("recipe_authors")
+        for b in blob:
+            if b.name == name:
+                with b.open("rb") as f:
+                    data = f.read()
+                    #image = data.download_as_bytes()
+                    return data

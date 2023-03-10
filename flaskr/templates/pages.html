@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wikipedia Pages</title>
+</head>
+<body>
+
+<h1></h1>
+<p>Our wikipedia is about food recipes. The pages in this wiki are: </p>
+{%for page in result%}
+<li> 
+    <a href="/pages/{{page}}">{{page}}</a>
+
+ </li>
+ {% endfor %}
+
+
