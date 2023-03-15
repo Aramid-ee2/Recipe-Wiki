@@ -1,6 +1,6 @@
 # Imported request to be able to acces info returned from inputs
 from flask import Flask,render_template, redirect, flash, request, url_for, Response
-from flask_login import login_user, login_required
+from flask_login import login_user, login_required, logout_user
 from flaskr.login import User
 import base64
 
@@ -43,6 +43,7 @@ def make_endpoints(app, backend,logging ):
         # If the request is a Post, get username and password from the request and pass it to backend class
         if request.method == 'POST':
             backend.sign_up(request.form['user_name'], request.form['password'])
+            return render_template("log_in.html")
         # If the request is a Get, then return the page
         else:
             return render_template("sign_up.html")
@@ -52,12 +53,14 @@ def make_endpoints(app, backend,logging ):
         #call the backend get_image on each image
         author_image1= backend.get_image("aramide.PNG")
         author_image2= backend.get_image("gabriel.jpeg")
+        author_image3 = backend.get_image("julian.PNG")
         
         encoded_author1 = base64.b64encode(author_image1)
         encoded_author2 = base64.b64encode(author_image2)
+        encoded_author3 = base64.b64encode(author_image3)
         #encoding the image binary data 
 
-        return render_template("about.html", img1 = encoded_author1.decode('utf-8'), img2 = encoded_author2.decode('utf-8'))
+        return render_template("about.html", img1 = encoded_author1.decode('utf-8'), img2 = encoded_author2.decode('utf-8'),img3 = encoded_author3.decode('utf-8'))
         #creating a string of unicode characters using "utf-8" encoding , sending the unicoded characters to the html file
 
 
@@ -89,7 +92,7 @@ def make_endpoints(app, backend,logging ):
                 #log the user in                
                 
                 #Redirect users to home page after successfully logging in
-                return redirect(url_for('home'))          
+                return redirect(url_for("home"))          
  
         return render_template("log_in.html")
 
@@ -104,12 +107,11 @@ def make_endpoints(app, backend,logging ):
         return render_template("upload.html")
     
 
-    @app.route('/logout')
-    @login_required    
+    @app.route("/logout")
+    @login_required
     def logout():
-        if 'username' in session:
-            session.pop('username')
-        return redirect('/')
+        logout_user()
+        return redirect("/home")
     
     
     
