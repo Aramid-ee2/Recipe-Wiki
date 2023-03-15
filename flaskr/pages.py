@@ -1,9 +1,9 @@
 # Imported request to be able to acces info returned from inputs
-from flask import Flask,render_template, redirect, flash, request, url_for
+from flask import Flask,render_template, redirect, flash, request, url_for, Response
 from flask_login import login_user, login_required
 from flaskr.login import User
 import base64
-#from flaskr.__init__ import 
+
 
 def make_endpoints(app, backend,logging ):
     # Flask uses the "app.route" decorator to call methods when users
@@ -22,17 +22,20 @@ def make_endpoints(app, backend,logging ):
 
     @app.route("/pages")
     def pages():
+        #call get_all_page_names from backend to get the list of all the page names in google cloud storage 
         all_pages = backend.get_all_page_names()
+        #return the list of all page names to html inorder for it to be displayed 
         return render_template("pages.html", result = all_pages)
           
 
     # Pages Route
     @app.route("/pages/<page_id>")
     def get_page(page_id):
+        #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id)
         # Returns a different page depending on the page_id input
-        #return render_template("welcome.html", page_data)
-        return page_data
+        return f"<html><body><p>{{page_data}}</p></body></html>"
+        
 
     # Sign up Route
     @app.route("/sign_up" , methods=['GET', 'POST'])
@@ -46,31 +49,34 @@ def make_endpoints(app, backend,logging ):
 
     @app.route("/about")
     def about():
+        #call the backend get_image on each image
         author_image1= backend.get_image("aramide.PNG")
         author_image2= backend.get_image("gabriel.jpeg")
         
         encoded_author1 = base64.b64encode(author_image1)
         encoded_author2 = base64.b64encode(author_image2)
-        #img1 = encoded_author1.decode('utf-8'), img2 = encoded_author2.decode('utf-8') )
-        
+        #encoding the image binary data 
+
         return render_template("about.html", img1 = encoded_author1.decode('utf-8'), img2 = encoded_author2.decode('utf-8'))
-# Encoding image resource
-    #Julian's about route
-    @app.route('/about')
-    def about():
-        authors = [
-        {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
-        {"Gabriel Terrazas": "Author 2","image": "gabe.jpg"},
-        {"Julian Pacheco": "Author 3","image": "julian.jpg"}
-        ]
-        for author in authors:
-            author["image_url"] = backend.get_image(author["image"])
-        return render_template("about.html", authors=authors)
+        #creating a string of unicode characters using "utf-8" encoding , sending the unicoded characters to the html file
+
+
+    # #Julian's about route
+    # @app.route('/about')
+    # def about():
+    #     authors = [
+    #     {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
+    #     {"Gabriel Terrazas": "Author 2","image": "gabe.jpg"},
+    #     {"Julian Pacheco": "Author 3","image": "julian.jpg"}
+    #     ]
+    #     for author in authors:
+    #         author["image_url"] = backend.get_image(author["image"])
+    #     return render_template("about.html", authors=authors)
 
     
     @app.route("/log_in", methods = ["GET", "POST"])
     def login():
-        #if the request
+        #if the request is a post
         if request.method == 'POST':
             #Get what user puts into the form which is username and password
             user_name = request.form["user_name"]
@@ -80,12 +86,11 @@ def make_endpoints(app, backend,logging ):
                 #Create an instance of the class user
                 user = User(user_name)
                 login_user(user)
-                #flask.flash('Successfully logged in ')
-                #Redirect users to home page after logging in
-                return redirect(url_for('home'))
-           
-            #return render_template("welcome.html", name = user_name)
-            
+                #log the user in                
+                
+                #Redirect users to home page after successfully logging in
+                return redirect(url_for('home'))          
+ 
         return render_template("log_in.html")
 
     # Upload Route
@@ -97,8 +102,6 @@ def make_endpoints(app, backend,logging ):
             backend.upload(request.files['file'])
         # Redirect user to home page after uploading a file
         return render_template("upload.html")
-
-    # About Route
     
 
     @app.route('/logout')

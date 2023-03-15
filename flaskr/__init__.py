@@ -6,7 +6,11 @@ from flaskr.login import User
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
+
+#creating login manager class to enable the app and flask login to work together 
+
 login_manager = LoginManager()
+
 # The flask terminal command inside "run-flask.sh" searches for
 # this method inside of __init__.py (containing flaskr module 
 # properties) as we set "FLASK_APP=flaskr" before running "flask".
@@ -34,10 +38,12 @@ def create_app(test_config=None):
     pages.make_endpoints(app, backend_instance,logging)
     
     login_manager.init_app(app)
+    #configuring the application for login
 
 
     return app
 
+#using the user_loader class to reload user object from user id
 @login_manager.user_loader
 def load_user(user_id):
     return User(user_id)
