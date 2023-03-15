@@ -2,6 +2,8 @@ from flaskr import create_app
 import pytest
 from flaskr.backend import Backend
 from unittest.mock import MagicMock, mock_open, patch
+from flask_login import logout_user
+from flask import url_for
 
 # See https://flask.palletsprojects.com/en/2.2.x/testing/ 
 # for more info on testing
@@ -85,4 +87,15 @@ def test_log_in_route_fail(client):
     assert response.request.path == "/log_in"
     assert b"<h1>Login</h1>" in response.data
 
-
+def test_logout(client):
+    with client:
+        # Log in a mock user
+        client.post("/log_in", data={"user_name": "test_user", "password": "test_password"})
+        # Check that the user is logged in
+        assert current_user.is_authenticated
+        # Call the logout route
+        response = client.get("/logout")
+        # Check that the user is logged out
+        assert not current_user.is_authenticated
+        # Check that the response redirects to the home page
+        assert response.location == "http://localhost/home"
