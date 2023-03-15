@@ -33,8 +33,10 @@ def make_endpoints(app, backend,logging ):
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id)
+
+        return render_template('wiki_page.html', page_data=page_data)
         # Returns a different page depending on the page_id input
-        return f"<html><body><p>{{page_data}}</p></body></html>"
+        #return f"<html><body><p>{{page_data}}</p></body></html>"
         
 
     # Sign up Route
