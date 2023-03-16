@@ -14,11 +14,12 @@ login_manager = LoginManager()
 # The flask terminal command inside "run-flask.sh" searches for
 # this method inside of __init__.py (containing flaskr module 
 # properties) as we set "FLASK_APP=flaskr" before running "flask".
-def create_app(test_config=None):
+def create_app(test_config=None, backend_instance=None):
     # Create and configure the app.
     app = Flask(__name__, instance_relative_config=True,)
     # Create backend class
-    backend_instance = backend.Backend(storage.Client())
+    if backend_instance is None:
+        backend_instance = backend.Backend(storage.Client())
     # This is the default secret key used for login sessions
     # By default the dev environment uses the key 'dev'
     app.config.from_mapping(
@@ -35,8 +36,8 @@ def create_app(test_config=None):
 
     # TODO(Project 1): Make additional modifications here for logging in, backends
     # and additional endpoints.
-    pages.make_endpoints(app, backend_instance,logging)
-    
+    pages.make_endpoints(app, backend_instance, logging)
+
     login_manager.init_app(app)
     #configuring the application for login
 

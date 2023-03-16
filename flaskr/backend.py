@@ -1,4 +1,3 @@
-# TODO(Project 1): Implement Backend according to the requirements.
 # To be able to access the bucket
 from google.cloud import storage
 import hashlib
@@ -12,7 +11,7 @@ class Backend:
     # issues in the tests. The tests pass a mock client object, but the backend
     # ends up using a real client!
     def __init__(self, storage_client):
-        self.storage_client = storage.Client()
+        self.storage_client = storage_client
         # Initialize access to all buckets
         self.users_bucket = self.storage_client.bucket('users_project1')
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
@@ -41,6 +40,9 @@ class Backend:
 
     def get_all_page_names(self):
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
+        # Would again prefer
+        # self.wiki_info_bucket.list_blobs()
+        # here to minimize the duplication of string constants like 'wiki_info_project1'
         blobs = self.storage_client.list_blobs("wiki_info_project1")
         #Creating an empty list to help store all the page names for pages in wiki_info_project1 bucket
         page_names = []
