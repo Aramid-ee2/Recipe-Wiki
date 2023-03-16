@@ -11,22 +11,27 @@ def make_endpoints(app, backend,logging ):
     # Default route
     @app.route("/")
     def main():
-        # TODO: Log test
         logging.info("Someone hit the Main Page")
+        # This should be returning the home page
+        # return render_template("home.html")
+        # I think the '/home' and '/' routes should just be combined into one
+        # route under '/'
+        # The '/' route is the first page visitors to the wiki go to, so it
+        # should be your home page.
         return render_template("main.html")
 
     # Home Page Route
     @app.route("/home")
     def home():
-        return render_template("home.html")   
+        return render_template("home.html")
 
     @app.route("/pages")
     def pages():
-        #call get_all_page_names from backend to get the list of all the page names in google cloud storage 
+        #call get_all_page_names from backend to get the list of all the page names in google cloud storage
         all_pages = backend.get_all_page_names()
-        #return the list of all page names to html inorder for it to be displayed 
-        return render_template("pages.html", result = all_pages)
-          
+        #return the list of all page names to html inorder for it to be displayed
+        return render_template("pages.html", result=all_pages)
+
 
     # Pages Route
     @app.route("/pages/<page_id>")
@@ -36,13 +41,14 @@ def make_endpoints(app, backend,logging ):
 
         return render_template('wiki_page.html', page_data=page_data)
         # Returns a different page depending on the page_id input
-        #return f"<html><body><p>{{page_data}}</p></body></html>"
-        
+        # Remember to remove old code and comments from debugging when you're
+        # done with them
+
 
     # Sign up Route
     @app.route("/sign_up" , methods=['GET', 'POST'])
     def sign_up():
-        # If the request is a Post, get username and password from the request and pass it to backend class
+        # If the request is a POST, get username and password from the request and pass it to backend class
         if request.method == 'POST':
             backend.sign_up(request.form['user_name'], request.form['password'])
             return render_template("log_in.html")
@@ -56,29 +62,27 @@ def make_endpoints(app, backend,logging ):
         author_image1= backend.get_image("aramide.PNG")
         author_image2= backend.get_image("gabriel.jpeg")
         author_image3 = backend.get_image("julian.PNG")
-        
+
         encoded_author1 = base64.b64encode(author_image1)
         encoded_author2 = base64.b64encode(author_image2)
         encoded_author3 = base64.b64encode(author_image3)
-        #encoding the image binary data 
+        #encoding the image binary data
 
-        return render_template("about.html", img1 = encoded_author1.decode('utf-8'), img2 = encoded_author2.decode('utf-8'),img3 = encoded_author3.decode('utf-8'))
+        # Try to keep lines less than 80 character wide.
+        return render_template(
+            "about.html",
+            # I think it'd be good to give these more descriptive names than
+            # img1, 2 etc. since the template needs to put each image next to
+            # the correct name.
+            img1=encoded_author1.decode('utf-8'),
+            img2=encoded_author2.decode('utf-8'),
+            img3=encoded_author3.decode('utf-8'),
+        )
         #creating a string of unicode characters using "utf-8" encoding , sending the unicoded characters to the html file
 
 
-    # #Julian's about route
-    # @app.route('/about')
-    # def about():
-    #     authors = [
-    #     {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
-    #     {"Gabriel Terrazas": "Author 2","image": "gabe.jpg"},
-    #     {"Julian Pacheco": "Author 3","image": "julian.jpg"}
-    #     ]
-    #     for author in authors:
-    #         author["image_url"] = backend.get_image(author["image"])
-    #     return render_template("about.html", authors=authors)
+    # Remember to remove old artifacts from development
 
-    
     @app.route("/log_in", methods = ["GET", "POST"])
     def login():
         #if the request is a post
@@ -91,31 +95,35 @@ def make_endpoints(app, backend,logging ):
                 #Create an instance of the class user
                 user = User(user_name)
                 login_user(user)
-                #log the user in                
-                
+                #log the user in
+
                 #Redirect users to home page after successfully logging in
-                return redirect(url_for("home"))          
- 
+                return redirect(url_for("home"))
+
+            # It'd be good to show the user an error if their password is wrong.
+            # Flask's 'flashing' system is the easiest way to do so:
+            # https://flask.palletsprojects.com/en/2.2.x/patterns/flashing/
+
         return render_template("log_in.html")
 
     # Upload Route
     @app.route("/upload" , methods = ["GET" , "POST"])
     @login_required
     def upload():
-        # Fix Post 
+        # Remember to remove old todos
         if request.method == "POST":
             backend.upload(request.files['file'])
+        # It looks like the redirect from the below comment isn't actually
+        # happening. We fall through and show the user the upload page again
+        # after the upload completes.
         # Redirect user to home page after uploading a file
         return render_template("upload.html")
-    
+
 
     @app.route("/logout")
+    # It should be okay to not have @login_required on logout. Can help avoid
+    # spurious authentication errors.
     @login_required
     def logout():
         logout_user()
         return redirect("/home")
-    
-    
-    
-   
-

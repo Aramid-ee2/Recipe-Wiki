@@ -4,17 +4,17 @@
 <head>
     <head>
         <!-- TODO(Checkpoint Requirement 3): Change the title and content of your wiki.-->
-        <title>{% block page_name %} 
-
-        {% endblock %}
-    </title>
+        <title>{% block page_name %}{% endblock %}</title>
     </head>
 </head>
 
 <body> {% block content %}
+    <!-- I think the include for the navigation bar would make sense outside
+      the content block. That way it would be present on all pages, without
+      needing each page to be responsible for including it. -->
     {% include 'navigation_bar.html' %}
     <!-- TODO(Project 1): Implement routes. -->
-    <div>       
+    <div>
         <!-- TODO(Checkpoint Requirement 3): Change the title and content of your wiki.-->
         Gabriel Terrazas
         <br>
