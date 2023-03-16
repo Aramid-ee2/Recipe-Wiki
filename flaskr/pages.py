@@ -5,7 +5,7 @@ from flaskr.login import User
 import base64
 
 
-def make_endpoints(app, backend,logging ):
+def make_endpoints(app, backend, logging):
     # Flask uses the "app.route" decorator to call methods when users
     # go to a specific route on the project's website.
     # Default route

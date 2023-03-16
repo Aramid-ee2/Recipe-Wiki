@@ -1,4 +1,3 @@
-# TODO(Project 1): Implement Backend according to the requirements.
 # To be able to access the bucket
 from google.cloud import storage
 import hashlib
@@ -8,7 +7,7 @@ class Backend:
     SALT = "Heqodap12"
 
     def __init__(self, storage_client):
-        self.storage_client = storage.Client()
+        self.storage_client = storage_client
         # Initialize access to all buckets
         self.users_bucket = self.storage_client.bucket('users_project1')
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')  
