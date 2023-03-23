@@ -10,8 +10,8 @@ def test_sign_up():
     mock_storage_client = MagicMock()
     user_name = "gabriel"
     password = "terrazas"
-    final_password =  Backend.SALT + user_name + password
-    expected_val =  hashlib.sha256(final_password.encode()).hexdigest()
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -21,11 +21,12 @@ def test_sign_up():
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(expected_val)
 
+
 def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"
-    final_password =  Backend.SALT + user_name + password
-    expected_val =  hashlib.sha256(final_password.encode()).hexdigest()
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
 
     #creating mocks
     mock_storage_client = MagicMock()
@@ -37,6 +38,7 @@ def test_sign_in():
 
     assert signed_in == True
 
+
 def test_upload():
     mock_storage_client = MagicMock()
     mock_file = MagicMock()
@@ -47,8 +49,8 @@ def test_upload():
 
     # Assertions
     mock_storage_client.bucket().blob().upload_from_file.assert_called_with(
-        mock_file, content_type=mock_file.content_type
-    )
+        mock_file, content_type=mock_file.content_type)
+
 
 def test_init():
     # Mock client
@@ -57,6 +59,7 @@ def test_init():
     backend = Backend(mock_storage_client)
     assert backend.users_bucket != None
     assert backend.wiki_info_bucket != None
+
 
 def test_get_wiki_page():
     mock_blob = MagicMock()
@@ -69,6 +72,7 @@ def test_get_wiki_page():
 
     backend = Backend(mock_storage_client)
     assert backend.get_wiki_page('some_page') == 'some content'
+
 
 def test_get_all_page_names():
     #creating mocks

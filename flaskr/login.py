@@ -1,13 +1,14 @@
 from flask_login import LoginManager, login_user
 import hashlib
-from flaskr.backend import Backend 
+from flaskr.backend import Backend
 
 
 #Creating a user class to represent users
 class User:
+
     def __init__(self, username):
-        self. username = username
-    
+        self.username = username
+
     def is_authenticated(self):
         return True
 
@@ -19,5 +20,3 @@ class User:
 
     def get_id(self):
         return f"{self.username}"
-
-
