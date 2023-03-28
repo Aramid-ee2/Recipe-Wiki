@@ -1,9 +1,17 @@
 image: python:3
 
 lint:
- stage: test
+ stage: build
  script:
  - pip install yapf
  - yapf --style google -i --recursive .
  only:
  - pushes
+
+unittest:
+ stage: test
+ script:
+  - pip install -r requirements.txt
+  - pytest .
+ only:
+  - pushes
