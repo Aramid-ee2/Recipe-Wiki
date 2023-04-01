@@ -15,6 +15,7 @@ class Backend:
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
         self.authors_buckets = self.storage_client.bucket("recipe_authors")
 
+    # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
         blobs = self.storage_client.list_blobs("wiki_info_project1")
