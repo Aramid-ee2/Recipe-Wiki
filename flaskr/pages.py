@@ -1,9 +1,10 @@
 # Imported request to be able to acces info returned from inputs
-from flask import Flask, render_template, redirect, flash, request, url_for, Response
-from flask_login import login_user, login_required, logout_user
+from flask import Flask, render_template, redirect, flash, request, url_for, Response, session
+from flask_login import login_user, login_required, logout_user, current_user
 from flaskr.login import User
-import base64
+from flaskr.settings import Settings
 
+import base64
 
 def make_endpoints(app, backend, logging):
     # Flask uses the "app.route" decorator to call methods when users
@@ -43,6 +44,7 @@ def make_endpoints(app, backend, logging):
         # If the request is a Post, get username and password from the request and pass it to backend class
         if request.method == 'POST':
             backend.sign_up(request.form['user_name'], request.form['password'])
+            session[request.form['user_name'] + "_settings"] = Settings()
             return render_template("log_in.html")
         # If the request is a Get, then return the page
         else:
@@ -65,18 +67,6 @@ def make_endpoints(app, backend, logging):
                                img2=encoded_author2.decode('utf-8'),
                                img3=encoded_author3.decode('utf-8'))
         #creating a string of unicode characters using "utf-8" encoding , sending the unicoded characters to the html file
-
-    # #Julian's about route
-    # @app.route('/about')
-    # def about():
-    #     authors = [
-    #     {"Aramide Ogundiran":"Author 1", "image": "aramide.jpg"},
-    #     {"Gabriel Terrazas": "Author 2","image": "gabe.jpg"},
-    #     {"Julian Pacheco": "Author 3","image": "julian.jpg"}
-    #     ]
-    #     for author in authors:
-    #         author["image_url"] = backend.get_image(author["image"])
-    #     return render_template("about.html", authors=authors)
 
     @app.route("/log_in", methods=["GET", "POST"])
     def login():
@@ -112,3 +102,24 @@ def make_endpoints(app, backend, logging):
     def logout():
         logout_user()
         return redirect("/home")
+    
+    # Settings Route
+    #TODO: Test route
+    @app.route("/settings", methods=["GET", "POST"])
+    def settings():
+        if request.method == "POST":
+            backend.update_language(current_user,request.form["fav_language"])
+        return render_template("settings.html")
+
+    @app.route("/settings/language", methods=["POST"])
+    def settings_language():
+        print(session)
+        session[current_user.username + "_settings"].language = request.form["fav_language"]
+        print(session)
+        return render_template("settings.html")
+    
+    # # Bookmarks Route
+    # #TODO: Test route
+    # @app.route("/bookmarks")
+    # def settings():
+    #     return render_template("bookmarks.html")

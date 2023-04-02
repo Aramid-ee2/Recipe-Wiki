@@ -28,6 +28,7 @@ class Backend:
                     return data
                     #return data to the method that calls get_wiki_pqge method
 
+    #TODO: Update this method to include users preferred language
     def get_all_page_names(self):
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
         blobs = self.storage_client.list_blobs("wiki_info_project1")
@@ -80,3 +81,4 @@ class Backend:
                     #open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
+

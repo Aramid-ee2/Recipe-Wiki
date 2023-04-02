@@ -2,15 +2,15 @@
 <html>
     <head>
         <style>
-        body {
-        background-color: white;
-        color: black;
-        }
+            body {
+                background-color: white;
+                color: black;
+            }
 
-        .dark-mode {
-        background-color: dimgrey;
-        color: white;
-        }
+            .dark-mode {
+                background-color: dimgrey;
+                color: white;
+            }
         </style>
     </head>
 
@@ -20,17 +20,34 @@
         </center>
         <ul>
             <li><button onclick="nightMode()">Toggle night mode</button></li>
-            <li><button onclick="window.location.href='url';">View Bookmarked Pages
+            <br>
+            <li><button onclick="window.location.href='/bookmarks';">View Bookmarked Pages
         </button></li>
-            <li><button onclick="window.location.href='url';">Change Recipe Language
-        </button></li>
+            <li><form action="/settings/language" method="post">
+                <p>Change your preferred language:</p>
+                
+                <input type="radio" id="Spanish" name="fav_language" value="Spanish">
+                <label for="Spanish">Spanish</label><br>
+                
+                <input type="radio" id="English" name="fav_language" value="English">
+                <label for="English">English</label><br>
+                
+                <input type="radio" id="French" name="fav_language" value="French">
+                <label for="French">French</label><br>
+                
+                <input type="radio" id="Italian" name="fav_language" value="Italian">
+                <label for="Italian">Italian</label><br>
+              
+                <br>
+                <input type="submit" value="Save language">
+              </form></li>
         </ul>
 
         <script>
-        function nightMode() {
-            var background = document.body;
-            background.classList.toggle("dark-mode");
-        }
+            function nightMode() {
+                var background = document.body;
+                background.classList.toggle("dark-mode");
+            }
         </script>
 
     </body>
