@@ -81,4 +81,3 @@ class Backend:
                     #open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
-
