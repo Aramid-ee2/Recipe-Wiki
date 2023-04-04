@@ -105,10 +105,8 @@ def make_endpoints(app, backend, logging):
     
     # Settings Route
     #TODO: Test route
-    @app.route("/settings", methods=["GET", "POST"])
+    @app.route("/settings")
     def settings():
-        # if request.method == "POST":
-        #     backend.update_language(current_user,request.form["fav_language"])
         return render_template("settings.html")
 
     @app.route("/settings/language", methods=["POST"])
