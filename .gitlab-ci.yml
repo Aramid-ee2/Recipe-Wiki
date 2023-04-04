@@ -1,12 +1,12 @@
 image: python:3
 
 lint:
- stage: build
+ stage: test
  script:
- - pip install yapf
- - yapf --style google -i --recursive .
+  - pip install yapf==0.32.0
+  - yapf --style google --recursive --diff .
  only:
- - pushes
+  - merge_requests
 
 unittest:
  stage: test
