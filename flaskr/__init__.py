@@ -28,7 +28,7 @@ def create_app(test_config=None, backend_instance=None):
         backend_instance = backend.Backend(storage.Client())
     # This is the default secret key used for login sessions
     # By default the dev environment uses the key 'dev'
-    app.config.from_mapping(SECRET_KEY='dev', SESSION_TYPE = 'filesystem')
+    app.config.from_mapping(SECRET_KEY='dev', SESSION_TYPE='filesystem')
 
     if test_config is None:
         # Load the instance config, if it exists, when not testing.

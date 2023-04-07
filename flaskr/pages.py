@@ -6,6 +6,7 @@ from flaskr.settings import Settings
 
 import base64
 
+
 def make_endpoints(app, backend, logging):
     # Flask uses the "app.route" decorator to call methods when users
     # go to a specific route on the project's website.
@@ -102,7 +103,7 @@ def make_endpoints(app, backend, logging):
     def logout():
         logout_user()
         return redirect("/home")
-    
+
     # Settings Route
     #TODO: Test route
     @app.route("/settings")
@@ -111,9 +112,10 @@ def make_endpoints(app, backend, logging):
 
     @app.route("/settings/language", methods=["POST"])
     def settings_language():
-        session[current_user.username + "_settings"].language = request.form["fav_language"]
+        session[current_user.username +
+                "_settings"].language = request.form["fav_language"]
         return render_template("settings.html")
-    
+
     # # Bookmarks Route
     # #TODO: Test route
     # @app.route("/bookmarks")
