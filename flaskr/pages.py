@@ -13,7 +13,7 @@ def make_endpoints(app, backend, logging):
     @app.route("/")
     def main():
         # TODO: Log test
-        logging.info("hello my name is walt")
+        logging.info("hello my name is Aramide")
         return render_template("main.html")
 
     # Home Page Route
