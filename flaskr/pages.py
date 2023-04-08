@@ -1,8 +1,7 @@
 # Imported request to be able to acces info returned from inputs
-from flask import Flask, render_template, redirect, flash, request, url_for, Response, session
+from flask import Flask, render_template, redirect, flash, request, url_for, Response
 from flask_login import login_user, login_required, logout_user, current_user
 from flaskr.login import User
-from flaskr.settings import Settings
 
 import base64
 
@@ -45,7 +44,6 @@ def make_endpoints(app, backend, logging):
         # If the request is a Post, get username and password from the request and pass it to backend class
         if request.method == 'POST':
             backend.sign_up(request.form['user_name'], request.form['password'])
-            session[request.form['user_name'] + "_settings"] = Settings()
             return render_template("log_in.html")
         # If the request is a Get, then return the page
         else:
@@ -109,15 +107,3 @@ def make_endpoints(app, backend, logging):
     @app.route("/settings")
     def settings():
         return render_template("settings.html")
-
-    @app.route("/settings/language", methods=["POST"])
-    def settings_language():
-        session[current_user.username +
-                "_settings"].language = request.form["fav_language"]
-        return render_template("settings.html")
-
-    # # Bookmarks Route
-    # #TODO: Test route
-    # @app.route("/bookmarks")
-    # def settings():
-    #     return render_template("bookmarks.html")

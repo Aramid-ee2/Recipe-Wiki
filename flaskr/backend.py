@@ -1,6 +1,6 @@
 # To be able to access the bucket
 from google.cloud import storage
-import hashlib
+import hashlib, json
 
 
 class Backend:
@@ -53,7 +53,15 @@ class Backend:
         with blob.open("w") as f:
             #Add username to password hash so different users with same password get different hash value
             encoded = self.SALT + user_name + password
-            f.write(hashlib.sha256(encoded.encode()).hexdigest())
+            password = hashlib.sha256(encoded.encode()).hexdigest()
+            user_settings = { 
+                "Password" : password, 
+                "Language" : "English",
+                "Night_Mode" : False,
+                "Bookmarks" : []
+            }
+            json_object = json.dumps(user_settings)
+            f.write(json_object)
 
     def sign_in(self, user_name, password):
         #retrieve a reference to blob object named respective user_names stored in Google Cloud storage
@@ -62,10 +70,12 @@ class Backend:
         password = self.SALT + user_name + password
         password = hashlib.sha256(password.encode()).hexdigest()
         with blob.open("r") as f:
-            #opening the blob and reading the content which is the password
-            data = f.read()
+            # Retrieving password from json file in GCS
+            json_object = f.read()
+            user_info = json.loads(json_object)
+            user_password = user_info["Password"]
             #Checks if hashed password matches the content of the blob (password in bucket)
-            if data != password:
+            if user_password != password:
                 return False
                 #if the data is the same as the content of blob return True else return False
             return True
