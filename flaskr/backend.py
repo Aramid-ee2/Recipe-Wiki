@@ -14,6 +14,8 @@ class Backend:
         self.users_bucket = self.storage_client.bucket('users_project1')
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
         self.authors_buckets = self.storage_client.bucket("recipe_authors")
+        #Initialize inverted index        
+        self.inverted_index = {}
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
@@ -81,3 +83,9 @@ class Backend:
                     #open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
+
+    def create_index(self):
+        #  self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
+
+    
+        pass
