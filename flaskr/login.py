@@ -1,6 +1,5 @@
 from flask_login import LoginManager, login_user
 import hashlib
-from flaskr.backend import Backend
 
 
 #Creating a user class to represent users

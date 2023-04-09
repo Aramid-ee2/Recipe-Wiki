@@ -1,6 +1,8 @@
 # To be able to access the bucket
 from google.cloud import storage
 import hashlib, json
+from flask_login import current_user
+
 
 
 class Backend:
@@ -17,8 +19,15 @@ class Backend:
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob for user language preference
+        with blob.open("r") as f:
+            json_object = f.read()
+            user_info = json.loads(json_object)
+            user_language = user_info["Language"]
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
-        blobs = self.storage_client.list_blobs("wiki_info_project1")
+        blobs = self.storage_client.list_blobs("wiki_info_project1/" + str(user_language))
         for blob in blobs:
             #iterating through blobs to check for the blob we want to get its data
             if blob.name == name:
@@ -30,8 +39,16 @@ class Backend:
 
     #TODO: Update this method to include users preferred language
     def get_all_page_names(self):
+        # Retrieve user blob
+        user_blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob for user language preference
+        with user_blob.open("r") as f:
+            json_object = f.read()
+            user_info = json.loads(json_object)
+            user_language = user_info["Language"]
+        
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
-        blobs = self.storage_client.list_blobs("wiki_info_project1")
+        blobs = self.storage_client.list_blobs("wiki_info_project1/" + str(user_language))
         #Creating an empty list to help store all the page names for pages in wiki_info_project1 bucket
         page_names = []
         for blob in blobs:
@@ -54,11 +71,11 @@ class Backend:
             #Add username to password hash so different users with same password get different hash value
             encoded = self.SALT + user_name + password
             password = hashlib.sha256(encoded.encode()).hexdigest()
-            user_settings = { 
-                "Password" : password, 
-                "Language" : "English",
-                "Night_Mode" : False,
-                "Bookmarks" : []
+            user_settings = {
+                "Password": password,
+                "Language": "English",
+                "Night_Mode": False,
+                "Bookmarks": []
             }
             json_object = json.dumps(user_settings)
             f.write(json_object)
@@ -91,3 +108,46 @@ class Backend:
                     #open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
+
+    # TODO test
+    def update_language(self, new_language):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        user_info["Language"] = new_language
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)
+
+    # TODO test
+    def update_night_mode(self, new_bool):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        user_info["Night_Mode"] = new_bool
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)
+
+    # TODO test
+    def update_bookmarks(self, new_page):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        # Pass list through a set to prevent duplicate pages from being added
+        temp = set(user_info["Bookmarks"])
+        temp.add(new_page)
+        # Turn back into list for json file
+        new_list = list(temp)
+        user_info["Bookmarks"] = new_list
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)

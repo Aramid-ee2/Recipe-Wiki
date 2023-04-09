@@ -29,14 +29,21 @@ def make_endpoints(app, backend, logging):
         return render_template("pages.html", result=all_pages)
 
     # Pages Route
-    @app.route("/pages/<page_id>")
+    @app.route("/pages/<page_id>/bookmark")
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id)
 
         return render_template('wiki_page.html', page_data=page_data)
-        # Returns a different page depending on the page_id input
-        #return f"<html><body><p>{{page_data}}</p></body></html>"
+
+    # TODO test route
+    @app.route("/pages/<page_id>/bookmark")
+    def bookmark_page(page_id):
+        backend.update_bookmarks(page_id)
+        #call get_wiki_page from backend to get the respective page data depending on page_id
+        page_data = backend.get_wiki_page(page_id)
+
+        return render_template('wiki_page.html', page_data=page_data)
 
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])
@@ -77,8 +84,8 @@ def make_endpoints(app, backend, logging):
             #Call backend.signin to check valid details
             if backend.sign_in(user_name, password):
                 #Create an instance of the class user
-                user = User(user_name)
-                login_user(user)
+                current_user = User(user_name)
+                login_user(current_user)
                 #log the user in
 
                 #Redirect users to home page after successfully logging in
@@ -106,4 +113,10 @@ def make_endpoints(app, backend, logging):
     #TODO: Test route
     @app.route("/settings")
     def settings():
+        return render_template("settings.html")
+
+    #TODO: Test route
+    @app.route("/settings/language", methods=["POST"])
+    def settings_language():
+        backend.update_language(request.form["fav_language"])
         return render_template("settings.html")
