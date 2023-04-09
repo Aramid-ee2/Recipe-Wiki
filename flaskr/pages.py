@@ -113,10 +113,13 @@ def make_endpoints(app, backend, logging):
     #TODO: Test route
     @app.route("/settings")
     def settings():
-        return render_template("settings.html")
+        settings = backend.get_current_settings()
+        return render_template("settings.html", settings = settings)
 
     #TODO: Test route
     @app.route("/settings/language", methods=["POST"])
     def settings_language():
+        # Update language
         backend.update_language(request.form["fav_language"])
-        return render_template("settings.html")
+        settings = backend.get_current_settings()
+        return render_template("settings.html", settings = settings)
