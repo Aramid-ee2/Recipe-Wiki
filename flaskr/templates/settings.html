@@ -15,6 +15,7 @@
     </head>
 
     <body>
+        {% include 'navigation_bar.html' %}
         <center>
             <h2>Settings</h2>
         </center>
@@ -26,16 +27,32 @@
             <li><form action="/settings/language" method="post">
                 <p>Change your preferred language:</p>
                 
-                <input type="radio" id="Spanish" name="fav_language" value="Spanish">
+                <input type="radio" id="Spanish" name="fav_language" value="Spanish" 
+                    {% if settings["Language"] == "Spanish" %}
+                        checked
+                    {% endif %}
+                >
                 <label for="Spanish">Spanish</label><br>
                 
-                <input type="radio" id="English" name="fav_language" value="English">
+                <input type="radio" id="English" name="fav_language" value="English"
+                    {% if settings["Language"] == "English" %}
+                        checked
+                    {% endif %}
+                >
                 <label for="English">English</label><br>
                 
-                <input type="radio" id="French" name="fav_language" value="French">
+                <input type="radio" id="French" name="fav_language" value="French"
+                    {% if settings["Language"] == "French" %}
+                        checked
+                    {% endif %}
+                >
                 <label for="French">French</label><br>
                 
-                <input type="radio" id="Italian" name="fav_language" value="Italian">
+                <input type="radio" id="Italian" name="fav_language" value="Italian"
+                    {% if settings["Language"] == "Italian" %}
+                        checked
+                    {% endif %}
+                >
                 <label for="Italian">Italian</label><br>
               
                 <br>

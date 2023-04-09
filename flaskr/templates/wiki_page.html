@@ -4,6 +4,8 @@
     <title>{{ page_id }}</title>
 </head>
 <body>
+    {% include 'navigation_bar.html' %}
+    {% include 'bookmark.html' %}
     {{ page_data | safe }}
 </body>
 </html>

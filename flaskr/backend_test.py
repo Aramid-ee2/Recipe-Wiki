@@ -5,6 +5,7 @@ import hashlib
 import pytest
 
 
+# TODO fix test
 def test_sign_up():
     # Variables
     mock_storage_client = MagicMock()
@@ -22,6 +23,7 @@ def test_sign_up():
         mock_blob.write.assert_called_with(expected_val)
 
 
+# TODO fix test
 def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"

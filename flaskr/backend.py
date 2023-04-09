@@ -1,6 +1,8 @@
 # To be able to access the bucket
 from google.cloud import storage
-import hashlib
+import hashlib, json
+from flask_login import current_user
+
 
 
 class Backend:
@@ -55,7 +57,15 @@ class Backend:
         with blob.open("w") as f:
             #Add username to password hash so different users with same password get different hash value
             encoded = self.SALT + user_name + password
-            f.write(hashlib.sha256(encoded.encode()).hexdigest())
+            password = hashlib.sha256(encoded.encode()).hexdigest()
+            user_settings = {
+                "Password": password,
+                "Language": "English",
+                "Night_Mode": False,
+                "Bookmarks": []
+            }
+            json_object = json.dumps(user_settings)
+            f.write(json_object)
 
     def sign_in(self, user_name, password):
         #retrieve a reference to blob object named respective user_names stored in Google Cloud storage
@@ -64,10 +74,12 @@ class Backend:
         password = self.SALT + user_name + password
         password = hashlib.sha256(password.encode()).hexdigest()
         with blob.open("r") as f:
-            #opening the blob and reading the content which is the password
-            data = f.read()
+            # Retrieving password from json file in GCS
+            json_object = f.read()
+            user_info = json.loads(json_object)
+            user_password = user_info["Password"]
             #Checks if hashed password matches the content of the blob (password in bucket)
-            if data != password:
+            if user_password != password:
                 return False
                 #if the data is the same as the content of blob return True else return False
             return True
@@ -88,3 +100,54 @@ class Backend:
         #  self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
 
         pass
+    # TODO test
+    def update_language(self, new_language):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        user_info["Language"] = new_language
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)
+
+    # TODO test
+    def update_night_mode(self, new_bool):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        user_info["Night_Mode"] = new_bool
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)
+
+    # TODO test
+    def update_bookmarks(self, new_page):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        # Pass list through a set to prevent duplicate pages from being added
+        temp = set(user_info["Bookmarks"])
+        temp.add(new_page)
+        # Turn back into list for json file
+        new_list = list(temp)
+        user_info["Bookmarks"] = new_list
+        # Update GCS
+        with blob.open("w") as f:
+            json_object = json.dumps(user_info)
+            f.write(json_object)
+    
+    def get_current_settings(self):
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+        user_info.pop("Password")
+        return user_info
