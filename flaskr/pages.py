@@ -129,3 +129,5 @@ def make_endpoints(app, backend, logging):
     def search():
         # Add Post
         return render_template("search.html")
+    
+    # Fix search and add bookmark.html to page
