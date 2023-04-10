@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <title>Search For Your Favorite Recipes!</title>
+    </head>
+    <body>
+        {% include 'navigation_bar.html' %}
+        <h1>Search For Your Favorite Recipes!</h1>
+        <form action="search-results.html" method="POST">
+            <input type="text" name="query" placeholder="Search recipes...">
+            <input type="submit" value="Search">
+        </form>
+        <p>
+            Enter your favorite recipe, flavor, or ingredient into the search bar above. You will then be taken to a page that lists all of the recipes that match your search criteria!
+        </p>
+    </body>
+    </html>

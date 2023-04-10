@@ -123,3 +123,9 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings = settings)
+
+    #TODO: Test route
+    @app.route("/search", methods=["GET", "POST"])
+    def search():
+        # Add Post
+        return render_template("search.html")
