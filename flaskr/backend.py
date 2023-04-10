@@ -21,6 +21,7 @@ class Backend:
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
+
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
         blobs = self.storage_client.list_blobs("wiki_info_project1")
         for blob in blobs:
@@ -34,8 +35,19 @@ class Backend:
 
     #TODO: Update this method to include users preferred language
     def get_all_page_names(self):
+        #To load recipe pages based on user's preffered language
+
+        # Retrieve user blob.
+        blob = self.users_bucket.blob(current_user.get_id())
+        # Reading blob
+        json_object = blob.download_as_string()
+        user_info = json.loads(json_object)
+
+        preffered_language = user_info["Language"]
+
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
-        blobs = self.storage_client.list_blobs("wiki_info_project1")
+        blobs = self.wiki_info_bucket.list_blobs(prefix = preffered_language +'/')
+        #blobs = self.storage_client.list_blobs("wiki_info_project1")
         #Creating an empty list to help store all the page names for pages in wiki_info_project1 bucket
         page_names = []
         for blob in blobs:
@@ -96,10 +108,25 @@ class Backend:
                     data = f.read()
                     return data
 
-    def create_index(self):
-        #  self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
 
-        pass
+    #TODO: Figure how to extract texts from html files
+    def create_index(self):
+        #Call list_blobs method to get all the blobs in wiki info bucket so I can index their respective contents
+        blobs = self.wiki_info_bucket.list_blobs(prefix = "English/")
+        not_list = ['.',',',';','!','?','the','or','in','is','a','an','of','at','from','to']  
+        for blob in blobs:
+            with blob.open("r") as recipes:
+                recipe_content = recipes.read()
+                recipe_content = recipe_content.split() 
+                for word in recipe_content:
+                    if word.lower() not in not_list:
+                        if word.lower() not in self.inverted_index:
+                            self.inverted_index[word.lower()] = [blob.name]
+                        else:
+                            self.inverted_index[word.lower()].append(blob.name)
+        print(self.inverted_index)
+
+        
     # TODO test
     def update_language(self, new_language):
         # Retrieve user blob.
@@ -151,3 +178,7 @@ class Backend:
         user_info = json.loads(json_object)
         user_info.pop("Password")
         return user_info
+
+# storage_client = storage.Client()
+# backend_instance = Backend(storage_client)
+# backend_instance.create_index()
