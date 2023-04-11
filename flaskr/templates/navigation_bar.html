@@ -12,7 +12,7 @@
             }
         </style>
     </head>
-    <body>
+    <body{% if settings["Night_Mode"] %} class="dark" {% else %} class="light" {% endif %}>
         <title>{% block page_name %} 
 
             {% endblock %}

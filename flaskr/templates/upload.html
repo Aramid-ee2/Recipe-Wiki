@@ -3,12 +3,9 @@
 Upload
 {% endblock %}
 {% block content %}
-    <body>
-        <h1>Upload a file:</h1>
-        <form method="post" action="/upload" enctype="multipart/form-data">
-            <input type="file" id="myFile" name="file" required>
-            <input type="submit">
-        </form>
-
-    </body>
+    <h1>Upload a file:</h1>
+    <form method="post" action="/upload" enctype="multipart/form-data">
+        <input type="file" id="myFile" name="file" required>
+        <input type="submit">
+    </form>
 {% endblock %}

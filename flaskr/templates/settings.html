@@ -3,7 +3,6 @@
 Settings
 {% endblock %}
 {% block content %}
-    <body {% if settings["Night_Mode"] %} class="dark" {% else %} class="light" {% endif %}>
         <center>
             <h2>Settings</h2>
         </center>
@@ -54,6 +53,4 @@ Settings
                 background.classList.toggle("dark-mode");
             }
         </script>
-
-    </body>
 {% endblock %}

@@ -3,13 +3,11 @@
 Sign Up
 {% endblock %}
 {% block content %}
-    <body>
-        <h1>Create an account !</h1>
-        <form method="post" action="/sign_up">
-            <input type="text" name="user_name" placeholder="User Name" required/><br/>
-            <input type="password" name="password" placeholder="Password" required/><br/>
-            <br/>
-            <input type="submit" value="Submit"/>
-        </form>
-    </body>
+    <h1>Create an account !</h1>
+    <form method="post" action="/sign_up">
+        <input type="text" name="user_name" placeholder="User Name" required/><br/>
+        <input type="password" name="password" placeholder="Password" required/><br/>
+        <br/>
+        <input type="submit" value="Submit"/>
+    </form>
 {% endblock %}

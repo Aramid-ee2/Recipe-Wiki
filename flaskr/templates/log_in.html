@@ -3,13 +3,11 @@
 Log In
 {% endblock %}
 {% block content %}
-    <body>
-        <h1>Login</h1>
-        <form method = "post"  action = "/log_in">
-            <input type = "text" name = "user_name" placeholder="User Name" required/><br/>
-            <input type = "password" name = "password" placeholder="Password" required/><br/>
-            <br/>
-            <input type = "submit" value = "Log in"/>
-        </form>
-    </body>
+    <h1>Login</h1>
+    <form method = "post"  action = "/log_in">
+        <input type = "text" name = "user_name" placeholder="User Name" required/><br/>
+        <input type = "password" name = "password" placeholder="Password" required/><br/>
+        <br/>
+        <input type = "submit" value = "Log in"/>
+    </form>
 {% endblock %}

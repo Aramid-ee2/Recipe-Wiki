@@ -137,10 +137,19 @@ class Backend:
             f.write(json_object)
 
     def get_current_settings(self):
-        # Retrieve user blob.
-        blob = self.users_bucket.blob(current_user.get_id())
-        # Reading blob
-        json_object = blob.download_as_string()
-        user_info = json.loads(json_object)
-        user_info.pop("Password")
-        return user_info
+        if not current_user.get_id():
+            user_info = {
+                "Language": "English",
+                "Night_Mode": False,
+                "Bookmarks": []
+            }
+            return user_info
+        else:
+            # Retrieve user blob.
+            blob = self.users_bucket.blob(current_user.get_id())
+            # Reading blob
+            json_object = blob.download_as_string()
+            user_info = json.loads(json_object)
+            user_info.pop("Password")
+            # If user has not been created yet
+            return user_info
