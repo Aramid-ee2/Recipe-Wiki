@@ -4,7 +4,6 @@ import hashlib, json
 from flask_login import current_user
 
 
-
 class Backend:
 
     # Class prefix variable
@@ -136,7 +135,7 @@ class Backend:
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
-    
+
     def get_current_settings(self):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())

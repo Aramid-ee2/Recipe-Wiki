@@ -28,7 +28,8 @@ def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
-    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+    temp = hashlib.sha256(final_password.encode()).hexdigest()
+    expected_val = '{"Password": \"' + temp + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
 
     #creating mocks
     mock_storage_client = MagicMock()
