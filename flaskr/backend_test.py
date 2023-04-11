@@ -5,7 +5,6 @@ import hashlib
 import pytest
 
 
-# TODO fix test
 def test_sign_up():
     # Variables
     mock_storage_client = MagicMock()
