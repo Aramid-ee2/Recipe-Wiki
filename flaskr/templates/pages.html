@@ -1,8 +1,12 @@
 {% extends 'navigation_bar.html' %}
 {% block page_name %}
-Wiki Pages 
+    Wiki Pages 
 {% endblock %}
 {% block content %}
+<form action="/wiki_page/search" method="POST">
+            <input type="text" name="search" placeholder="Search recipes...">
+            <input type="submit" value="Search">
+</form>
 <h1> Recipes</h1>
 <p>Our wikipedia is about food recipes. The pages in this wiki are: </p>
 {%for page in result%}
