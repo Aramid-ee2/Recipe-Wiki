@@ -121,14 +121,20 @@ def make_endpoints(app, backend, logging):
     @app.route("/logout")
     @login_required
     def logout():
-        settings = backend.get_current_settings()
         logout_user()
-        return redirect("/home", settings=settings)
+        return render_template("home.html", settings=settings)
 
     # Settings Route
     #TODO: Test route
     @app.route("/settings")
     def settings():
+        settings = backend.get_current_settings()
+        return render_template("settings.html", settings=settings)
+    
+    #TODO: Test route
+    @app.route("/settings/night_mode" , methods=["POST"])
+    def settings_night_mode():
+        backend.update_night_mode()
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 

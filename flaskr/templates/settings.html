@@ -7,7 +7,11 @@ Settings
             <h2>Settings</h2>
         </center>
         <ul>
-            <li><button onclick="nightMode()">Toggle night mode</button></li>
+            <li>
+                <form action="/settings/night_mode" method="post">
+                    <input type="submit" value="Toggle Night Mode">
+                </form>
+            </li>
             <br>
             <li><button onclick="window.location.href='/bookmarks';">View Bookmarked Pages
         </button></li>
@@ -46,11 +50,4 @@ Settings
                 <input type="submit" value="Save language">
               </form></li>
         </ul>
-
-        <script>
-            function nightMode() {
-                var background = document.body;
-                background.classList.toggle("dark-mode");
-            }
-        </script>
 {% endblock %}

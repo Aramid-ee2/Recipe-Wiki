@@ -106,13 +106,16 @@ class Backend:
             f.write(json_object)
 
     # TODO test
-    def update_night_mode(self, new_bool):
+    def update_night_mode(self):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         # Reading blob
         json_object = blob.download_as_string()
         user_info = json.loads(json_object)
-        user_info["Night_Mode"] = new_bool
+        if user_info["Night_Mode"] :
+            user_info["Night_Mode"] = False
+        else:
+            user_info["Night_Mode"] = True
         # Update GCS
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
@@ -135,7 +138,8 @@ class Backend:
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
-
+    
+    # TODO test
     def get_current_settings(self):
         if not current_user.get_id():
             user_info = {
