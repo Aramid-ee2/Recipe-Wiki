@@ -1,5 +1,8 @@
-<!DOCTYPE html>
-<html>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Settings
+{% endblock %}
+{% block content %}
     <head>
         <style>
             body {
@@ -15,7 +18,6 @@
     </head>
 
     <body>
-        {% include 'navigation_bar.html' %}
         <center>
             <h2>Settings</h2>
         </center>
@@ -68,4 +70,4 @@
         </script>
 
     </body>
-</html>
+{% endblock %}

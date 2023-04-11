@@ -1,9 +1,9 @@
-<html>
-    <head>
-        <title>Sign Up</title>
-    </head>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Log In
+{% endblock %}
+{% block content %}
     <body>
-        {% include 'navigation_bar.html' %}
         <h1>Login</h1>
         <form method = "post"  action = "/log_in">
             <input type = "text" name = "user_name" placeholder="User Name" required/><br/>
@@ -12,4 +12,4 @@
             <input type = "submit" value = "Log in"/>
         </form>
     </body>
-</html>
+{% endblock %}

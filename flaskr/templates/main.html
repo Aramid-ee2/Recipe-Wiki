@@ -1,18 +1,9 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <head>
-        <!-- TODO(Checkpoint Requirement 3): Change the title and content of your wiki.-->
-        <title>{% block page_name %} 
-
-        {% endblock %}
-    </title>
-    </head>
-</head>
-
-<body> {% block content %}
-    {% include 'navigation_bar.html' %}
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Main 
+{% endblock %}
+{% block content %}
+<body>
     <!-- TODO(Project 1): Implement routes. -->
     <div>       
         <!-- TODO(Checkpoint Requirement 3): Change the title and content of your wiki.-->
@@ -23,7 +14,5 @@
         Julian Pacheco
         <br>
     </div>
-    {% endblock %}
 </body>
-
-</html>
+{% endblock %}

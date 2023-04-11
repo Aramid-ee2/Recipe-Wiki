@@ -114,7 +114,7 @@ def make_endpoints(app, backend, logging):
     @app.route("/settings")
     def settings():
         settings = backend.get_current_settings()
-        return render_template("settings.html", settings=settings)
+        return render_template("settings.html", settings = settings)
 
     #TODO: Test route
     @app.route("/settings/language", methods=["POST"])
@@ -122,4 +122,10 @@ def make_endpoints(app, backend, logging):
         # Update language
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
-        return render_template("settings.html", settings=settings)
+        return render_template("settings.html", settings = settings)
+    
+    @app.route("/bookmarks")
+    def bookmarks():
+        return render_template("bookmarks.html")
+    
+    
