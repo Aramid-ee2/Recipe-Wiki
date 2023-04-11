@@ -4,7 +4,6 @@ import hashlib, json
 from flask_login import current_user
 
 
-
 class Backend:
 
     # Class prefix variable
@@ -41,7 +40,8 @@ class Backend:
         user_info = json.loads(json_object)
         preffered_language = user_info.get("Language")
         #calling the list_blobs method on storage_client to list all the blobs stored in the user's preffered language directory and store it in "blobs"
-        blobs = self.wiki_info_bucket.list_blobs(prefix = preffered_language +'/')
+        blobs = self.wiki_info_bucket.list_blobs(prefix=preffered_language +
+                                                 '/')
         #Creating an empty list to help store all the page names for pages in wiki_info_project1 bucket
         page_names = []
         for blob in blobs:
@@ -101,7 +101,7 @@ class Backend:
                     #open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
-        
+
     # TODO test
     def update_language(self, new_language):
         # Retrieve user blob.
@@ -144,7 +144,7 @@ class Backend:
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
-    
+
     def get_current_settings(self):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -153,7 +153,3 @@ class Backend:
         user_info = json.loads(json_object)
         user_info.pop("Password")
         return user_info
-
-# storage_client = storage.Client()
-# backend_instance = Backend(storage_client)
-# backend_instance.create_index()
