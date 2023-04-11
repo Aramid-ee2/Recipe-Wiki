@@ -1,8 +1,7 @@
 from flaskr.backend import Backend
 from unittest.mock import MagicMock, mock_open, patch
 from google.cloud import storage
-import hashlib
-import pytest
+import hashlib, pytest
 
 
 # TODO fix test
@@ -12,7 +11,8 @@ def test_sign_up():
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
-    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+    expected_val =  '{"Password": \"' + str(hashlib.sha256(final_password.encode()).hexdigest()) + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -20,7 +20,7 @@ def test_sign_up():
 
     # Assertions
     with mock_storage_client.bucket().blob().open() as mock_blob:
-        mock_blob.write.assert_called_with(expected_val)
+        mock_blob.write.assert_called_with(str(expected_val))
 
 
 # TODO fix test

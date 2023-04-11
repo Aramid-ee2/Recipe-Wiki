@@ -3,13 +3,13 @@
 <head>
     <title>{{ page_id }}</title>
 </head>
-<body>
-    {% include 'navigation_bar.html' %}
-    {% include 'bookmark.html' %}
-    <form action="search-results.html" method="POST">
-        <input type="text" name="search" placeholder="Search recipes...">
-        <input type="submit" value="Search">
-    </form>
-    {{ page_data | safe }}
-</body>
+    <body>
+        {% include 'navigation_bar.html' %}
+        {% include 'bookmark.html' %}
+        <form action="search-results.html" method="POST">
+            <input type="text" name="search" placeholder="Search recipes...">
+            <input type="submit" value="Search">
+        </form>
+        {{ page_data | safe }}
+    </body>
 </html>
