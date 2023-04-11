@@ -13,6 +13,7 @@ def test_sign_up():
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+    final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -20,7 +21,7 @@ def test_sign_up():
 
     # Assertions
     with mock_storage_client.bucket().blob().open() as mock_blob:
-        mock_blob.write.assert_called_with(expected_val)
+        mock_blob.write.assert_called_with(final_val)
 
 
 # TODO fix test
