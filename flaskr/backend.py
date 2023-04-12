@@ -93,8 +93,7 @@ class Backend:
                     data = f.read()
                     return data
 
-    # TODO test
-    def update_language(self, new_language):
+    def update_language(self, new_language, current_user = current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         json_object = blob.download_as_string()
@@ -105,8 +104,7 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
-    def update_night_mode(self):
+    def update_night_mode(self, current_user = current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         # Reading blob
@@ -121,7 +119,6 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # # TODO test
     # def update_bookmarks(self, new_page):
     #     # Retrieve user blob.
     #     blob = self.users_bucket.blob(current_user.get_id())
@@ -139,7 +136,7 @@ class Backend:
     #         json_object = json.dumps(user_info)
     #         f.write(json_object)
 
-    def get_current_settings(self):
+    def get_current_settings(self, current_user = current_user):
         if not current_user.get_id():
             user_info = {
                 "Language": "English",
