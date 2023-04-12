@@ -102,14 +102,15 @@ def test_get_image():
     backend = Backend(mock_storage_client)
     assert backend.get_image(mock_blob.name) == "authors image"
 
+
 def test_update_language():
-    # Variables 
+    # Variables
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
 
-    # Mocks 
+    # Mocks
     mock_storage_client = MagicMock()
     mock_bucket = MagicMock()
     mock_user = MagicMock()
@@ -118,7 +119,6 @@ def test_update_language():
     mock_storage_client.bucket.return_value = mock_bucket
     mock_bucket.blob.return_value = mock_blob
     mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
-
 
     # Testing Code
     backend = Backend(mock_storage_client)
@@ -128,16 +128,15 @@ def test_update_language():
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(final_val)
 
-    
 
 def test_update_night_mode():
-    # Variables 
+    # Variables
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
 
-    # Mocks 
+    # Mocks
     mock_storage_client = MagicMock()
     mock_bucket = MagicMock()
     mock_user = MagicMock()
@@ -147,7 +146,6 @@ def test_update_night_mode():
     mock_bucket.blob.return_value = mock_blob
     mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
 
-
     # Testing Code
     backend = Backend(mock_storage_client)
     backend.update_night_mode(mock_user)
@@ -156,14 +154,15 @@ def test_update_night_mode():
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(final_val)
 
+
 def test_get_current_settings():
-    # Variables 
+    # Variables
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
 
-    # Mocks 
+    # Mocks
     mock_storage_client = MagicMock()
     mock_bucket = MagicMock()
     mock_user = MagicMock()
@@ -179,4 +178,3 @@ def test_get_current_settings():
 
     final_val = {'Bookmarks': [], 'Language': 'English', 'Night_Mode': False}
     assert final_val == assert_val
-    

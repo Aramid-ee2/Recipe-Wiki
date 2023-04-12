@@ -118,9 +118,9 @@ def make_endpoints(app, backend, logging):
     def settings():
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
-    
+
     #TODO: Test route
-    @app.route("/settings/night_mode" , methods=["POST"])
+    @app.route("/settings/night_mode", methods=["POST"])
     def settings_night_mode():
         backend.update_night_mode()
         settings = backend.get_current_settings()
