@@ -22,7 +22,6 @@ def test_sign_up():
         mock_blob.write.assert_called_with(final_val)
 
 
-# TODO fix test
 def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"

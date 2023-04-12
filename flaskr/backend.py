@@ -121,23 +121,23 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
-    def update_bookmarks(self, new_page):
-        # Retrieve user blob.
-        blob = self.users_bucket.blob(current_user.get_id())
-        # Reading blob
-        json_object = blob.download_as_string()
-        user_info = json.loads(json_object)
-        # Pass list through a set to prevent duplicate pages from being added
-        temp = set(user_info["Bookmarks"])
-        temp.add(new_page)
-        # Turn back into list for json file
-        new_list = list(temp)
-        user_info["Bookmarks"] = new_list
-        # Update GCS
-        with blob.open("w") as f:
-            json_object = json.dumps(user_info)
-            f.write(json_object)
+    # # TODO test
+    # def update_bookmarks(self, new_page):
+    #     # Retrieve user blob.
+    #     blob = self.users_bucket.blob(current_user.get_id())
+    #     # Reading blob
+    #     json_object = blob.download_as_string()
+    #     user_info = json.loads(json_object)
+    #     # Pass list through a set to prevent duplicate pages from being added
+    #     temp = set(user_info["Bookmarks"])
+    #     temp.add(new_page)
+    #     # Turn back into list for json file
+    #     new_list = list(temp)
+    #     user_info["Bookmarks"] = new_list
+    #     # Update GCS
+    #     with blob.open("w") as f:
+    #         json_object = json.dumps(user_info)
+    #         f.write(json_object)
 
     def get_current_settings(self):
         if not current_user.get_id():
