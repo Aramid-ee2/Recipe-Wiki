@@ -70,15 +70,15 @@ def test_get_wiki_page():
 
     mock_blob_u = MagicMock
     mock_blob_u.download_as_string.return_value = {
-                "Password": 'hashedword',
-                "Language": "English",
-                "Night_Mode": False,
-                "Bookmarks": []
-            }    
+        "Password": 'hashedword',
+        "Language": "English",
+        "Night_Mode": False,
+        "Bookmarks": []
+    }
 
     mock_blob = MagicMock()
     mock_blob.name = 'English/some_page'
-    
+
     with mock_blob.open() as mock_file:
         mock_file.read.return_value = 'some content'
 
@@ -96,11 +96,11 @@ def test_get_all_page_names():
 
     mock_blob_u = MagicMock
     mock_blob_u.download_as_string.return_value = {
-                "Password": 'hashedword',
-                "Language": "English",
-                "Night_Mode": False,
-                "Bookmarks": []
-            }
+        "Password": 'hashedword',
+        "Language": "English",
+        "Night_Mode": False,
+        "Bookmarks": []
+    }
 
     mock_storage_client = MagicMock()
     mock_blob = MagicMock
@@ -127,7 +127,23 @@ def test_get_image():
     backend = Backend(mock_storage_client)
     assert backend.get_image(mock_blob.name) == "authors image"
 
+
 def test_create_inverted_index():
+    mock_storage_client = MagicMock()
     file_name = 'food.html'
-    file
-    pass    
+    file_ref = 'food.html'
+    inverted_index = {}
+    file_content = "<h1>Welcome Three Engineers wiki!</h1> "
+
+    expected_index = {
+        'welcome': ['food,html'],
+        'Three': ['food.html'],
+        'Engineers': ['food.html'],
+        'wiki': ['food.html']
+    }
+    with open(file_ref) as mock_file:
+        mock_file.read.return_value = file_content
+    backend = Backend(mock_storage_client)
+
+    assert backend.create_inverted_index(file_ref, inverted_index,
+                                         file_name) == expected_index

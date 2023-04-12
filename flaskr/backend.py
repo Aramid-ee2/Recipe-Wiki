@@ -4,6 +4,7 @@ import hashlib, json, string, re
 from flask_login import current_user
 from bs4 import BeautifulSoup
 
+
 class Backend:
 
     # Class prefix variable
@@ -28,15 +29,14 @@ class Backend:
             preffered_language = user_info.get("Language")
         else:
             preffered_language = 'English'
-        
+
         blobs = self.wiki_info_bucket.list_blobs(prefix=preffered_language +
-                                                    '/')
+                                                 '/')
         for blob in blobs:
             if blob.name == preffered_language + '/' + name:
                 with blob.open("r") as f:
                     data = f.read()
                     return data
-
 
     #TODO: Update this method to include users preferred language
     def get_all_page_names(self):
@@ -48,18 +48,18 @@ class Backend:
             json_object = blob.download_as_string()
             user_info = json.loads(json_object)
             preffered_language = user_info.get("Language")
-        else: 
-             preffered_language = 'English'
+        else:
+            preffered_language = 'English'
         #calling the list_blobs method on storage_client to list all the blobs stored in the wiki_info_project1 and store it in "blobs"
         blobs = self.wiki_info_bucket.list_blobs(prefix=preffered_language +
-                                                    '/')
+                                                 '/')
         for blob in blobs:
             #iterate over blobs inorder to append the pages name to page_names list
             name = blob.name.split('/')
             page_names.append(name[-1])
         return page_names
-    
-    def create_inverted_index(self,file, inverted_index, file_name):        
+
+    def create_inverted_index(self, file, inverted_index, file_name):
         stop_words = {
             'the', 'or', 'in', 'is', 'a', 'an', 'of', 'at', 'from', 'to'
         }
@@ -73,7 +73,7 @@ class Backend:
                     if word.lower() not in inverted_index:
                         inverted_index[word.lower()] = [file_name]
                     else:
-                        inverted_index[word.lower()].append(file_name)                        
+                        inverted_index[word.lower()].append(file_name)
             return inverted_index
 
     def upload(self, file):
@@ -87,13 +87,13 @@ class Backend:
             json_index = f.read()
             inverted_index = json.loads(json_index)
             print(inverted_index)
-            updated = self.create_inverted_index(file, inverted_index, file.filename)
+            updated = self.create_inverted_index(file, inverted_index,
+                                                 file.filename)
             #Writing the updated inverted index to gcs as a json string
             json_index = json.dumps(updated)
             # Reach out to GCS to access bucket where inverted index is stored and rewrite to it
             f.write(json_index)
-    
-   
+
     def sign_up(self, user_name, password):
         # Reach out to GCS and create user_name file that contains the password
         blob = self.users_bucket.blob(user_name)
@@ -148,7 +148,7 @@ class Backend:
         for blob in blobs:
             result = self.create_inverted_index(blob, inverted_index, blob.name)
             #with blob.open("r") as recipes:
-        print(result)       
+
         #Writing the inverted index to gcs as a json string
         json_index = json.dumps(result)
         # Reach out to GCS to access bucket where inverted index would be stored
@@ -211,6 +211,7 @@ class Backend:
     def get_pages_for_search_terms(self, terms):
         #dependency to enable visibility of search result
         return [chicken_tamales.html]
+
 
 # storage_client = storage.Client
 # back = Backend(storage_client)
