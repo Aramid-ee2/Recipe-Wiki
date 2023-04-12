@@ -44,7 +44,7 @@ def make_endpoints(app, backend, logging):
                                settings=settings)
 
     # TODO test route
-    @app.route("/pages/<page_id>/bookmark")
+    @app.route("/pages/<page_id>")
     def bookmark_page(page_id):
         settings = backend.get_current_settings()
         backend.update_bookmarks(page_id)
@@ -145,8 +145,3 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
-
-    @app.route("/bookmarks")
-    def bookmarks():
-        settings = backend.get_current_settings()
-        return render_template("bookmarks.html", settings=settings)

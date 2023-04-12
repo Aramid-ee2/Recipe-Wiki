@@ -138,8 +138,7 @@ class Backend:
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
-    
-    # TODO test
+
     def get_current_settings(self):
         if not current_user.get_id():
             user_info = {

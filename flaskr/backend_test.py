@@ -4,16 +4,14 @@ from google.cloud import storage
 import hashlib, pytest
 
 
-# TODO fix test
 def test_sign_up():
     # Variables
     mock_storage_client = MagicMock()
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
-    expected_val = '{"Password": \"' + str(
-        hashlib.sha256(final_password.encode()).hexdigest()
-    ) + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+    final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -21,7 +19,7 @@ def test_sign_up():
 
     # Assertions
     with mock_storage_client.bucket().blob().open() as mock_blob:
-        mock_blob.write.assert_called_with(str(expected_val))
+        mock_blob.write.assert_called_with(final_val)
 
 
 # TODO fix test
@@ -29,7 +27,8 @@ def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
-    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+    temp = hashlib.sha256(final_password.encode()).hexdigest()
+    expected_val = '{"Password": \"' + temp + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
 
     #creating mocks
     mock_storage_client = MagicMock()
