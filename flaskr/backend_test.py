@@ -1,8 +1,7 @@
 from flaskr.backend import Backend
 from unittest.mock import MagicMock, mock_open, patch
 from google.cloud import storage
-import hashlib
-import pytest
+import hashlib, pytest
 
 
 def test_sign_up():
@@ -23,7 +22,6 @@ def test_sign_up():
         mock_blob.write.assert_called_with(final_val)
 
 
-# TODO fix test
 def test_sign_in():
     user_name = "gabriel"
     password = "terrazas"
@@ -103,3 +101,80 @@ def test_get_image():
 
     backend = Backend(mock_storage_client)
     assert backend.get_image(mock_blob.name) == "authors image"
+
+
+def test_update_language():
+    # Variables
+    user_name = "gabriel"
+    password = "terrazas"
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+
+    # Mocks
+    mock_storage_client = MagicMock()
+    mock_bucket = MagicMock()
+    mock_user = MagicMock()
+    mock_blob = MagicMock()
+
+    mock_storage_client.bucket.return_value = mock_bucket
+    mock_bucket.blob.return_value = mock_blob
+    mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+
+    # Testing Code
+    backend = Backend(mock_storage_client)
+    backend.update_language("Italian", mock_user)
+
+    final_val = '{"Password": \"' + expected_val + '\", "Language": "Italian", "Night_Mode": false, "Bookmarks": []}'
+    with mock_storage_client.bucket().blob().open() as mock_blob:
+        mock_blob.write.assert_called_with(final_val)
+
+
+def test_update_night_mode():
+    # Variables
+    user_name = "gabriel"
+    password = "terrazas"
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+
+    # Mocks
+    mock_storage_client = MagicMock()
+    mock_bucket = MagicMock()
+    mock_user = MagicMock()
+    mock_blob = MagicMock()
+
+    mock_storage_client.bucket.return_value = mock_bucket
+    mock_bucket.blob.return_value = mock_blob
+    mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+
+    # Testing Code
+    backend = Backend(mock_storage_client)
+    backend.update_night_mode(mock_user)
+
+    final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": true, "Bookmarks": []}'
+    with mock_storage_client.bucket().blob().open() as mock_blob:
+        mock_blob.write.assert_called_with(final_val)
+
+
+def test_get_current_settings():
+    # Variables
+    user_name = "gabriel"
+    password = "terrazas"
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+
+    # Mocks
+    mock_storage_client = MagicMock()
+    mock_bucket = MagicMock()
+    mock_user = MagicMock()
+    mock_blob = MagicMock()
+
+    mock_storage_client.bucket.return_value = mock_bucket
+    mock_bucket.blob.return_value = mock_blob
+    mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+
+    # Testing Code
+    backend = Backend(mock_storage_client)
+    assert_val = backend.get_current_settings(mock_user)
+
+    final_val = {'Bookmarks': [], 'Language': 'English', 'Night_Mode': False}
+    assert final_val == assert_val

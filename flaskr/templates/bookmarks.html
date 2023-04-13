@@ -1,16 +1,13 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Bookmarks</title>
-    </head>
-    <body>
-        <center>
-            <h1>Your bookmarked pages:</h1>
-        </center>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Bookmarks
+{% endblock %}
+{% block content %}
+<center>
+    <h1>Your bookmarked pages:</h1>
+</center>
 
-        <ul>
-            <li> hi </li>
-        </ul>
-
-    </body>
-</html>
+<ul>
+    <li> hi </li>
+</ul>
+{% endblock %}
