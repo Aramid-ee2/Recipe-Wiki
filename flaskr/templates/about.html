@@ -1,13 +1,16 @@
-{% extends 'navigation_bar.html' %}
+{% extends "main.html" %}
 
 {% block page_name %}
 About This Wiki
+
 {% endblock %}
 
 {% block content %}
+{% include 'navigation_bar.html' %}
 <h3>About this Wiki</h3>
 
 <p>This wiki is about recipes from different cultures such as Nigeria and Mexico. The recipe includes ingredients and steps to achieveing those meals</p>
+<!-- TODO(Project 1): Add info about the wiki. -->
 
 <h3>Your Authors</h3>
 <p>Aramide Ogundiran</p>
@@ -20,6 +23,8 @@ About This Wiki
 <p>Julian Pacheco</p>
 <img src= "data:image/PNG;base64,{{img3}}" heigth = "200" width = "400">
 
+
+<!-- TODO(Project 1): Add team members and pictures to about page. -->
 
 {% endblock %}
 

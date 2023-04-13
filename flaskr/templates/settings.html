@@ -1,17 +1,26 @@
-{% extends 'navigation_bar.html' %}
-{% block page_name %}
-Settings
-{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                background-color: white;
+                color: black;
+            }
+
+            .dark-mode {
+                background-color: dimgrey;
+                color: white;
+            }
+        </style>
+    </head>
+
+    <body>
+        {% include 'navigation_bar.html' %}
         <center>
             <h2>Settings</h2>
         </center>
         <ul>
-            <li>
-                <form action="/settings/night_mode" method="post">
-                    <input type="submit" value="Toggle Night Mode">
-                </form>
-            </li>
+            <li><button onclick="nightMode()">Toggle night mode</button></li>
             <br>
             <li><button onclick="window.location.href='/bookmarks';">View Bookmarked Pages
         </button></li>
@@ -50,4 +59,13 @@ Settings
                 <input type="submit" value="Save language">
               </form></li>
         </ul>
-{% endblock %}
+
+        <script>
+            function nightMode() {
+                var background = document.body;
+                background.classList.toggle("dark-mode");
+            }
+        </script>
+
+    </body>
+</html>
