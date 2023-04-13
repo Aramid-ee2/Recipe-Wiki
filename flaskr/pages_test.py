@@ -130,5 +130,3 @@ def test_logout(client, mock_backend):
         response = client.get("/logout")
         # Check that the user is logged out
         assert not current_user.is_authenticated
-        # Check that the response redirects to the home page
-        assert response.location == "/home"

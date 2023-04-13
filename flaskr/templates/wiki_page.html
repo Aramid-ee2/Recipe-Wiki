@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Sign Up
+{% endblock %}
+{% block content %}
 <head>
     <title>{{ page_id }}</title>
 </head>
-<body>
-    {% include 'navigation_bar.html' %}
-    {% include 'bookmark.html' %}
+    <form action="/wiki_page/bookmark">
+        <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
+        <label for="bookmark"> Bookmark this page</label><br>
+        <input type="submit" value="Submit">
+    </form>
+    <br>
     {{ page_data | safe }}
-</body>
-</html>
+{% endblock %}
