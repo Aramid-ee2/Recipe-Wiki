@@ -3,6 +3,7 @@ from unittest.mock import MagicMock, mock_open, patch
 from google.cloud import storage
 import hashlib
 import pytest
+from json import dumps
 
 
 def test_sign_up():
@@ -65,52 +66,60 @@ def test_init():
 
 
 def test_get_wiki_page():
-    mock_current_user = MagicMock()
-    mock_current_user.get_id.return_value = "aramide#"
+    #Mocking     
+    mock_user = MagicMock()
+    mock_user.get_id.return_value = "aramide#"
 
-    mock_blob_u = MagicMock
-    mock_blob_u.download_as_string.return_value = {
+    mock_user_bucket = MagicMock()
+    mock_user_blob = MagicMock()
+    mock_user_bucket.blob.return_value = mock_user_blob
+    mock_user_blob.download_as_string.return_value = dumps({
         "Password": 'hashedword',
-        "Language": "English",
+        "Language": "French",
         "Night_Mode": False,
         "Bookmarks": []
-    }
-
+    })
+    mock_wiki_bucket = MagicMock()
     mock_blob = MagicMock()
-    mock_blob.name = 'English/some_page'
-
-    with mock_blob.open() as mock_file:
-        mock_file.read.return_value = 'some content'
-
+    mock_wiki_bucket.list_blobs.return_value = [mock_blob]
+    mock_blob.name = 'French/some_page'
+    mock_blob.open.return_value.__enter__.return_value.read.return_value = 'some content'    
+    
     mock_storage_client = MagicMock()
-    mock_storage_client.list_blobs.return_value = [mock_blob]
+    mock_storage_client.bucket.side_effect = [mock_user_bucket, mock_wiki_bucket, None, None]
+    
 
     backend = Backend(mock_storage_client)
-    assert backend.get_wiki_page('English/some_page') == 'some content'
-
+    assert backend.get_wiki_page('some_page',mock_user) == 'some content'
 
 def test_get_all_page_names():
     #creating mocks
-    mock_current_user = MagicMock()
-    mock_current_user.get_id.return_value = "aramide#"
+    mock_user = MagicMock()
+    mock_user.get_id.return_value = "aramide#"
 
-    mock_blob_u = MagicMock
-    mock_blob_u.download_as_string.return_value = {
+    mock_user_bucket = MagicMock()
+    mock_user_blob = MagicMock()
+    mock_user_bucket.blob.return_value = mock_user_blob
+    mock_user_blob.download_as_string.return_value = dumps({
         "Password": 'hashedword',
-        "Language": "English",
+        "Language": "Italian",
         "Night_Mode": False,
         "Bookmarks": []
-    }
-
+    })
+    mock_wiki_bucket = MagicMock()
+    mock_blob1 = MagicMock()
+    mock_blob2 = MagicMock()
+    mock_wiki_bucket.list_blobs.return_value = [mock_blob1,mock_blob2]
+    mock_blob1.name = 'Italian/some_page'
+    mock_blob2.name = 'Italian/another_page'
+   
     mock_storage_client = MagicMock()
-    mock_blob = MagicMock
-    mock_blob.name = 'English/some page'
-    mock_storage_client.list_blobs.return_value = [mock_blob]
-
+    mock_storage_client.bucket.side_effect = [mock_user_bucket, mock_wiki_bucket, None, None]
+    
     backend = Backend(mock_storage_client)
-    page_names = backend.get_all_page_names()
+    page_names = backend.get_all_page_names(mock_user)
 
-    assert page_names == ['some page']
+    assert page_names == ['some_page', 'another_page']
 
 
 def test_get_image():
@@ -133,7 +142,7 @@ def test_create_inverted_index():
     file_name = 'food.html'
     file_ref = 'food.html'
     inverted_index = {}
-    file_content = "<h1>Welcome Three Engineers wiki!</h1> "
+    file_content = "<h1>Welcome Three Engineers wiki!</h1>"
 
     expected_index = {
         'welcome': ['food,html'],

@@ -1,7 +1,7 @@
 # To be able to access the bucket
 from google.cloud import storage
 import hashlib, json, string, re
-from flask_login import current_user
+#from flask_login import current_user
 from bs4 import BeautifulSoup
 
 
@@ -20,10 +20,10 @@ class Backend:
             "wiki_search_content")
 
     # TODO: update method to search file from selected language (default english)
-    def get_wiki_page(self, name):
+    def get_wiki_page(self, name, user_details):
         #blobs = self.storage_client.list_blobs("wiki_info_project1")
-        if current_user.get_id():
-            blob = self.users_bucket.blob(current_user.get_id())
+        if user_details.get_id():
+            blob = self.users_bucket.blob(user_details.get_id())
             json_object = blob.download_as_string()
             user_info = json.loads(json_object)
             preffered_language = user_info.get("Language")
@@ -39,11 +39,12 @@ class Backend:
                     return data
 
     #TODO: Update this method to include users preferred language
-    def get_all_page_names(self):
+    def get_all_page_names(self, user_details):
         page_names = []
+        #print(current_user)
         #To load recipe pages based on user's preffered language user blob needs to be retrieved.
-        if current_user.get_id():
-            blob = self.users_bucket.blob(current_user.get_id())
+        if user_details.get_id():
+            blob = self.users_bucket.blob(user_details.get_id())
             # Reading blob
             json_object = blob.download_as_string()
             user_info = json.loads(json_object)
@@ -59,22 +60,32 @@ class Backend:
             page_names.append(name[-1])
         return page_names
 
-    def create_inverted_index(self, file, inverted_index, file_name):
+    def file_content_blob(self,blob):
+        with blob.open("r") as new:
+            recipe_content = new.read()
+            return recipe_content
+
+    def file_content_file(self,file):
+        with open(file, 'r') as new:
+            recipe_content = new.read()
+            return recipe_content
+            
+    def create_inverted_index(self, file, inverted_index, file_name, recipe_content):
         stop_words = {
             'the', 'or', 'in', 'is', 'a', 'an', 'of', 'at', 'from', 'to'
         }
-        with open(file, 'r') as new:
-            recipe_content = new.read()
-            soup = BeautifulSoup(recipe_content, "html.parser")
-            text_content = soup.get_text()
-            filtered = re.findall(r'\w+', text_content)
-            for word in filtered:
-                if word.lower() not in stop_words:
-                    if word.lower() not in inverted_index:
-                        inverted_index[word.lower()] = [file_name]
-                    else:
-                        inverted_index[word.lower()].append(file_name)
-            return inverted_index
+        soup = BeautifulSoup(recipe_content, "html.parser")
+        text_content = soup.get_text()
+        filtered = re.findall(r'\w+', text_content)
+        print(filtered)
+        for word in filtered:
+            if word.lower() not in stop_words:
+                if word.lower() not in inverted_index:
+                    inverted_index[word.lower()] = [file_name]
+                else:
+                    inverted_index[word.lower()].append(file_name)
+        print(inverted_index)
+        return inverted_index
 
     def upload(self, file):
         # File.filename returns name of the file
@@ -87,8 +98,9 @@ class Backend:
             json_index = f.read()
             inverted_index = json.loads(json_index)
             print(inverted_index)
+            recipe_content = self.file_content_file(file)
             updated = self.create_inverted_index(file, inverted_index,
-                                                 file.filename)
+                                                 file.filename, recipe_content)
             #Writing the updated inverted index to gcs as a json string
             json_index = json.dumps(updated)
             # Reach out to GCS to access bucket where inverted index is stored and rewrite to it
@@ -146,7 +158,9 @@ class Backend:
         #Call list_blobs method to get all the blobs in wiki info bucket so I can index their respective contents
         blobs = self.wiki_info_bucket.list_blobs(prefix="English/")
         for blob in blobs:
-            result = self.create_inverted_index(blob, inverted_index, blob.name)
+            recipe_content = self.file_content_blob(blob)
+            result = self.create_inverted_index(blob, inverted_index, blob.name, recipe_content)
+        
             #with blob.open("r") as recipes:
 
         #Writing the inverted index to gcs as a json string
