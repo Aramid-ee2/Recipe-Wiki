@@ -1,7 +1,7 @@
 # To be able to access the bucket
 from google.cloud import storage
 import hashlib, json, string, re
-#from flask_login import current_user
+from flask_login import current_user
 from bs4 import BeautifulSoup
 
 
@@ -83,7 +83,8 @@ class Backend:
                 if word.lower() not in inverted_index:
                     inverted_index[word.lower()] = [file_name]
                 else:
-                    inverted_index[word.lower()].append(file_name)
+                    if file_name not in inverted_index[word.lower()]:
+                        inverted_index[word.lower()].append(file_name )
         print(inverted_index)
         return inverted_index
 
@@ -227,6 +228,6 @@ class Backend:
         return [chicken_tamales.html]
 
 
-# storage_client = storage.Client
-# back = Backend(storage_client)
-# back.initial_index()
+storage_client = storage.Client()
+back = Backend(storage_client)
+back.initial_index()
