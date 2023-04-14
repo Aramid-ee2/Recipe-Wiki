@@ -1,17 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Wikipedia Pages</title>
-</head>
-<body>
-    {% include 'navigation_bar.html' %}
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+    Wiki Pages 
+{% endblock %}
+{% block content %}
 <h1> Recipes</h1>
 <p>Our wikipedia is about food recipes. The pages in this wiki are: </p>
 {%for page in result%}
 <li> 
     <a href="/pages/{{page}}">{{page}}</a>
-
- </li>
- {% endfor %}
-
+    
+</li>
+{% endfor %}
+{% endblock %}
 
