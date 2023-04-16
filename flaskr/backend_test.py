@@ -154,6 +154,7 @@ def test_update_night_mode():
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(final_val)
 
+
 def test_update_bookmarks():
     # Variables
     user_name = "gabriel"
@@ -178,6 +179,7 @@ def test_update_bookmarks():
     final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": ["some_page"]}'
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(final_val)
+
 
 def test_get_current_settings():
     # Variables
