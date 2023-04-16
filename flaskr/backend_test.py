@@ -154,6 +154,30 @@ def test_update_night_mode():
     with mock_storage_client.bucket().blob().open() as mock_blob:
         mock_blob.write.assert_called_with(final_val)
 
+def test_update_bookmarks():
+    # Variables
+    user_name = "gabriel"
+    password = "terrazas"
+    final_password = Backend.SALT + user_name + password
+    expected_val = hashlib.sha256(final_password.encode()).hexdigest()
+
+    # Mocks
+    mock_storage_client = MagicMock()
+    mock_bucket = MagicMock()
+    mock_user = MagicMock()
+    mock_blob = MagicMock()
+
+    mock_storage_client.bucket.return_value = mock_bucket
+    mock_bucket.blob.return_value = mock_blob
+    mock_blob.download_as_string.return_value = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+
+    # Testing Code
+    backend = Backend(mock_storage_client)
+    backend.update_bookmarks("some_page", mock_user)
+
+    final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": ["some_page"]}'
+    with mock_storage_client.bucket().blob().open() as mock_blob:
+        mock_blob.write.assert_called_with(final_val)
 
 def test_get_current_settings():
     # Variables

@@ -6,11 +6,13 @@ Sign Up
 <head>
     <title>{{ page_id }}</title>
 </head>
-    <form action="/wiki_page/bookmark">
-        <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
-        <label for="bookmark"> Bookmark this page</label><br>
-        <input type="submit" value="Submit">
-    </form>
+    {% if current_user.is_authenticated %}
+        <form action="/wiki_page/bookmark">
+            <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
+            <label for="bookmark"> Bookmark this page</label><br>
+            <input type="submit" value="Submit">
+        </form>
+    {% endif %}
     <br>
     {{ page_data | safe }}
 {% endblock %}
