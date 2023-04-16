@@ -172,3 +172,16 @@ class Backend:
             with blob.open("w") as f:
                 json_object = json.dumps(reviews_list)
                 f.write(json_object)
+
+    def view_current_reviews(self, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        json_object = blob.download_as_string()
+        # Check if exists
+        if json_object:
+            reviews_list = json.loads(json_object)
+            sum_list = sum(reviews_list)
+            average = round(sum_list / len(reviews_list), 1)
+            return average
+        else:
+            # If no reviews exist yet
+            return 0
