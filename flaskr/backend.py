@@ -15,6 +15,7 @@ class Backend:
         self.users_bucket = self.storage_client.bucket('users_project1')
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
         self.authors_buckets = self.storage_client.bucket("recipe_authors")
+        self.reviews_bucket = self.storage_client.bucket("page_reviews")
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
@@ -153,3 +154,21 @@ class Backend:
             user_info.pop("Password")
             # If user has not been created yet
             return user_info
+
+    def update_review(self, review, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        # Check if exists
+        json_object = blob.download_as_string()
+        if json_object:
+            reviews_list = json.loads(json_object)
+            reviews_list.append(review)
+            # Update GCS
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
+        else:
+            # If no reviews exist yet
+            reviews_list = [review]
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)

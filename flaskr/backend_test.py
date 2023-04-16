@@ -178,3 +178,27 @@ def test_get_current_settings():
 
     final_val = {'Bookmarks': [], 'Language': 'English', 'Night_Mode': False}
     assert final_val == assert_val
+
+
+def test_update_review():
+    # Variables
+    test_page = "some_page"
+    test_reviews = [1, 2]
+    review = 3
+    updated_reviews = str([1, 2, 3])
+
+    # Mocks
+    mock_storage_client = MagicMock()
+    mock_bucket = MagicMock()
+    mock_blob = MagicMock()
+
+    mock_storage_client.bucket.return_value = mock_bucket
+    mock_bucket.blob.return_value = mock_blob
+    mock_blob.download_as_string.return_value = str(test_reviews)
+
+    # Testing Code
+    backend = Backend(mock_storage_client)
+    backend.update_review(review, test_page)
+
+    with mock_storage_client.bucket().blob().open() as mock_blob:
+        mock_blob.write.assert_called_with(updated_reviews)
