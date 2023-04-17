@@ -1,8 +1,7 @@
 from flaskr.backend import Backend
 from unittest.mock import MagicMock, mock_open, patch
 from google.cloud import storage
-import hashlib
-import pytest
+import hashlib, pytest, json
 
 
 def test_sign_up():
@@ -12,7 +11,12 @@ def test_sign_up():
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
-    final_val = '{"Password": \"' + expected_val + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+    final_val = json.dumps({
+        "Password": expected_val,
+        "Language": "English",
+        "Night_Mode": False,
+        "Bookmarks": [],
+    })
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -20,7 +24,12 @@ def test_sign_up():
 
     # Assertions
     with mock_storage_client.bucket().blob().open() as mock_blob:
-        mock_blob.write.assert_called_with(final_val)
+        assert json.loads(mock_blob.write.call_args.args[0]) == {
+            "Password": expected_val,
+            "Language": "English",
+            "Night_Mode": False,
+            "Bookmarks": [],
+        }
 
 
 # TODO fix test
@@ -29,7 +38,12 @@ def test_sign_in():
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     temp = hashlib.sha256(final_password.encode()).hexdigest()
-    expected_val = '{"Password": \"' + temp + '\", "Language": "English", "Night_Mode": false, "Bookmarks": []}'
+    expected_val = final_val = json.dumps({
+        "Password": temp,
+        "Language": "English",
+        "Night_Mode": False,
+        "Bookmarks": [],
+    })
 
     #creating mocks
     mock_storage_client = MagicMock()

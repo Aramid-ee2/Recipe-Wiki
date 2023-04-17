@@ -29,17 +29,8 @@ def make_endpoints(app, backend, logging):
         return render_template("pages.html", result=all_pages)
 
     # Pages Route
-    @app.route("/pages/<page_id>/bookmark")
-    def get_page(page_id):
-        #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id)
-
-        return render_template('wiki_page.html', page_data=page_data)
-
-    # TODO test route
     @app.route("/pages/<page_id>")
-    def bookmark_page(page_id):
-        backend.update_bookmarks(page_id)
+    def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id)
 
