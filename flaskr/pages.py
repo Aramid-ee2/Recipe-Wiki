@@ -43,6 +43,13 @@ def make_endpoints(app, backend, logging):
                                page_data=page_data,
                                settings=settings)
 
+    @app.route("/wiki_page/bookmark", methods=["PUT"])
+    def bookmark_page():
+        # Update bookmarks
+        backend.update_bookmarks(request.form["bookmark"])
+        settings = backend.get_current_settings()
+        return render_template('pages.html', settings=settings)
+
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])
     def sign_up():
@@ -113,20 +120,17 @@ def make_endpoints(app, backend, logging):
         return render_template("home.html", settings=settings)
 
     # Settings Route
-    #TODO: Test route
     @app.route("/settings")
     def settings():
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 
-    #TODO: Test route
     @app.route("/settings/night_mode", methods=["POST"])
     def settings_night_mode():
         backend.update_night_mode()
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 
-    #TODO: Test route
     @app.route("/settings/language", methods=["POST"])
     def settings_language():
         # Update language

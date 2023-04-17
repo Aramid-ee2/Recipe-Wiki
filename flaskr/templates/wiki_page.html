@@ -1,18 +1,11 @@
-{% extends 'navigation_bar.html' %}
-{% block page_name %}
-Sign Up
-{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html>
 <head>
     <title>{{ page_id }}</title>
 </head>
-    {% if current_user.is_authenticated %}
-        <form action="/wiki_page/bookmark">
-            <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
-            <label for="bookmark"> Bookmark this page</label><br>
-            <input type="submit" value="Submit">
-        </form>
-    {% endif %}
-    <br>
+<body>
+    {% include 'navigation_bar.html' %}
+    {% include 'bookmark.html' %}
     {{ page_data | safe }}
-{% endblock %}
+</body>
+</html>
