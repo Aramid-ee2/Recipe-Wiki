@@ -78,7 +78,7 @@ def test_about_route(client, mock_backend):
 
     response = client.get("/about")
     assert response.status_code == 200
-    assert b"<h3>About this Wiki</h3>" in response.data
+    assert b"<h1>About this Wiki</h1>" in response.data
 
 
 #Test login route when successful

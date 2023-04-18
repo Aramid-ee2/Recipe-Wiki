@@ -77,7 +77,6 @@ class Backend:
         soup = BeautifulSoup(recipe_content, "html.parser")
         text_content = soup.get_text()
         filtered = re.findall(r'\w+', text_content)
-        print(filtered)
         for word in filtered:
             if word.lower() not in stop_words:
                 if word.lower() not in inverted_index:
@@ -85,7 +84,6 @@ class Backend:
                 else:
                     if file_name not in inverted_index[word.lower()]:
                         inverted_index[word.lower()].append(file_name )
-        print(inverted_index)
         return inverted_index
 
     def upload(self, file):
@@ -98,7 +96,6 @@ class Backend:
             # Retrieving inverted index from json file in GCS
             json_index = f.read()
             inverted_index = json.loads(json_index)
-            print(inverted_index)
             recipe_content = self.file_content_file(file)
             updated = self.create_inverted_index(file, inverted_index,
                                                  file.filename, recipe_content)
@@ -223,11 +220,21 @@ class Backend:
         user_info.pop("Password")
         return user_info
 
-    def get_pages_for_search_terms(self, terms):
-        #dependency to enable visibility of search result
-        return [chicken_tamales.html]
+    def search(self, search_term):
+        result_docs = set()
+        blob = self.wiki_search_content.blob("inverted_index")
+        with blob.open("r") as f:
+            # Retrieving inverted index from json file in GCS
+            json_index = f.read()
+            inverted_index = json.loads(json_index)
+            word = search_term.lower().split()
+            for term in word:
+                if term in inverted_index:
+                    for files in inverted_index[term]:
+                        file_name = files.split('/')
+                        result_docs.add(file_name[-1])
+            return result_docs                  
+
+       
 
 
-storage_client = storage.Client()
-back = Backend(storage_client)
-back.initial_index()

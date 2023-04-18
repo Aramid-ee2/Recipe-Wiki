@@ -2,29 +2,40 @@
 
 {% block page_name %}
 About This Wiki
-
 {% endblock %}
 
 {% block content %}
 {% include 'navigation_bar.html' %}
-<h3>About this Wiki</h3>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="../static/main.css">
+</head>
+    <body>
+        <div class = "">
+            <div class = "about-wiki">
+                <h1>About this Wiki</h1>
+                <p>This wiki is about recipes from different cultures such as Nigeria and Mexico. The recipe includes ingredients and steps to achieveing those meals</p>
 
-<p>This wiki is about recipes from different cultures such as Nigeria and Mexico. The recipe includes ingredients and steps to achieveing those meals</p>
-<!-- TODO(Project 1): Add info about the wiki. -->
-
-<h3>Your Authors</h3>
-<p>Aramide Ogundiran</p>
-<img src= "data:image/PNG;base64,{{img1}}" heigth = "200" width = "400">
-
-
-<p>Gabriel Terrezas</p>
-<img src = "data:image/jpeg;base64,{{img2}}" heigth = "200" width = "400">
-
-<p>Julian Pacheco</p>
-<img src= "data:image/PNG;base64,{{img3}}" heigth = "200" width = "400">
-
-
-<!-- TODO(Project 1): Add team members and pictures to about page. -->
-
+                <h1>Your Authors</h1>
+            </div>
+            
+            <div class = "user-profile">
+                <div>
+                    <p>Aramide Ogundiran</p>
+                    <img src= "data:image/PNG;base64,{{img1}}" >
+                </div>
+               <div>
+                    <p>Gabriel Terrezas</p>
+                    <img src = "data:image/jpeg;base64,{{img2}}" >
+               </div>
+                <div>
+                    <p>Julian Pacheco</p>
+                    <img src= "data:image/PNG;base64,{{img3}}" >
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
 {% endblock %}
 
