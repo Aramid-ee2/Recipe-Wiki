@@ -14,3 +14,14 @@ Sign Up
     <br>
     {{ page_data | safe }}
 {% endblock %}
+<ul>
+    {% for comment in comments %}
+    <li>{{ comment }}</li>
+    {% endfor %}
+  </ul>
+  <form action="/add_comment" method="POST">
+    <input type="hidden" name="page_name" value="{{ page_name }}">
+    <textarea name="comment"></textarea>
+    <br>
+    <input type="submit" value="Add Comment">
+  </form>

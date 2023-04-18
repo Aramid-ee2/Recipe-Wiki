@@ -32,16 +32,16 @@ def make_endpoints(app, backend, logging):
                                result=all_pages,
                                settings=settings)
 
-    # Pages Route
-    @app.route("/pages/<page_id>")
-    def get_page(page_id):
-        settings = backend.get_current_settings()
-        #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id)
+    # # Pages Route
+    # @app.route("/pages/<page_id>")
+    # def get_page(page_id):
+    #     settings = backend.get_current_settings()
+    #     #call get_wiki_page from backend to get the respective page data depending on page_id
+    #     page_data = backend.get_wiki_page(page_id)
 
-        return render_template('wiki_page.html',
-                               page_data=page_data,
-                               settings=settings)
+    #     return render_template('wiki_page.html',
+    #                            page_data=page_data,
+    #                            settings=settings)
 
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])
@@ -133,3 +133,25 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
+
+    # Pages Route
+    @app.route("/pages/<page_id>", methods=["GET", "POST"])
+    def get_page(page_id):
+        settings = backend.get_current_settings()
+
+        if request.method == "POST":
+            # If the form was submitted, add the new comment to the page
+            username = request.form.get("username")
+            message = request.form.get("message")
+            backend.add_comment(page_id, username, message)
+
+        # Get the page data and comments
+        page_data = backend.get_wiki_page(page_id)
+        comments = backend.get_comments(page_id)
+
+        return render_template(
+            "wiki_page.html",
+            page_data=page_data,
+            comments=comments,
+            settings=settings,
+        )

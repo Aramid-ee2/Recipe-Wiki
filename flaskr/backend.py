@@ -2,6 +2,7 @@
 from google.cloud import storage
 import hashlib, json
 from flask_login import current_user
+from flask import request
 
 
 class Backend:
@@ -15,6 +16,7 @@ class Backend:
         self.users_bucket = self.storage_client.bucket('users_project1')
         self.wiki_info_bucket = self.storage_client.bucket('wiki_info_project1')
         self.authors_buckets = self.storage_client.bucket("recipe_authors")
+        self.comments_bucket = self.storage_client.bucket("project1_comments")
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name):
@@ -153,3 +155,35 @@ class Backend:
             user_info.pop("Password")
             # If user has not been created yet
             return user_info
+
+
+
+    class Comment:
+        def __init__(self, username, message):
+            self.username = username
+            self.message = message
+
+        def to_dict(self):
+            return {"username": self.username, "message": self.message}
+    def add_comment(self, page_id, username, message):
+        # Get the existing comments for the page
+        comments = self.get_comments(page_id)
+        # Create a new comment object
+        new_comment = Comment(username, message)
+        # Add the new comment to the list of comments
+        comments.append(new_comment)
+        # Convert the comments to JSON
+        comments_json = json.dumps([c.to_dict() for c in comments])
+        # Upload the comments file to the bucket
+        blob = self.comments_bucket.blob(f"{page_id}/comments.json")
+        blob.upload_from_string(comments_json)
+
+    def get_comments(self, page_id):
+        # Get the comments file from the bucket
+        blob = self.storage_client.bucket(self.bucket_name).blob(f"{page_id}/comments.json")
+        comments_json = blob.download_as_string()
+        if not comments_json:
+            return []
+        comments_dict = json.loads(comments_json)
+        comments = [Comment(**c) for c in comments_dict]
+        return comments
