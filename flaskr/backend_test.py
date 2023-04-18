@@ -11,12 +11,6 @@ def test_sign_up():
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     expected_val = hashlib.sha256(final_password.encode()).hexdigest()
-    final_val = json.dumps({
-        "Password": expected_val,
-        "Language": "English",
-        "Night_Mode": False,
-        "Bookmarks": [],
-    })
 
     # Run code we are interested in testing
     backend = Backend(mock_storage_client)
@@ -38,7 +32,7 @@ def test_sign_in():
     password = "terrazas"
     final_password = Backend.SALT + user_name + password
     temp = hashlib.sha256(final_password.encode()).hexdigest()
-    expected_val = final_val = json.dumps({
+    expected_val = json.dumps({
         "Password": temp,
         "Language": "English",
         "Night_Mode": False,
