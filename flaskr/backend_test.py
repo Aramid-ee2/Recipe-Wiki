@@ -42,15 +42,16 @@ def test_sign_in():
 
     assert signed_in == True
 
+
 # Still working on upload test
 # def test_upload():
-#     #Mocking 
-    
-#     mock_storage_client = MagicMock()  
+#     #Mocking
+
+#     mock_storage_client = MagicMock()
 #     mock_search_bucket = MagicMock()
 #     mock_wiki_bucket = MagicMock()
-#     mock_wiki_blob = MagicMock()    
-#     mock_search_blob = MagicMock()    
+#     mock_wiki_blob = MagicMock()
+#     mock_search_blob = MagicMock()
 #     mock_file = MagicMock()
 
 #     mock_wiki_bucket.blob.return_value = mock_wiki_blob
@@ -58,7 +59,7 @@ def test_sign_in():
 #     mock_search_blob.open.return_value.__enter__.return_value.read.return_value = dumps({
 #         "rice": ['Seasoned_rice.html','fried_rice.html'],
 #         "shrimp": ['shrimp_alfredo.html']
-#     })       
+#     })
 #     mock_storage_client.bucket.side_effect = [None, mock_wiki_bucket, None,mock_search_bucket]
 #     # Run code we are interested in testing
 #     backend = Backend(mock_storage_client)
@@ -77,11 +78,10 @@ def test_init():
     backend = Backend(mock_storage_client)
     assert backend.users_bucket != None
     assert backend.wiki_info_bucket != None
-   
-    
+
 
 def test_get_wiki_page():
-    #Mocking     
+    #Mocking
     mock_user = MagicMock()
     mock_user.get_id.return_value = "aramide#"
 
@@ -98,14 +98,16 @@ def test_get_wiki_page():
     mock_blob = MagicMock()
     mock_wiki_bucket.list_blobs.return_value = [mock_blob]
     mock_blob.name = 'French/some_page'
-    mock_blob.open.return_value.__enter__.return_value.read.return_value = 'some content'    
-    
+    mock_blob.open.return_value.__enter__.return_value.read.return_value = 'some content'
+
     mock_storage_client = MagicMock()
-    mock_storage_client.bucket.side_effect = [mock_user_bucket, mock_wiki_bucket, None, None]
-    
+    mock_storage_client.bucket.side_effect = [
+        mock_user_bucket, mock_wiki_bucket, None, None
+    ]
 
     backend = Backend(mock_storage_client)
-    assert backend.get_wiki_page('some_page',mock_user) == 'some content'
+    assert backend.get_wiki_page('some_page', mock_user) == 'some content'
+
 
 def test_get_all_page_names():
     #creating mocks
@@ -124,13 +126,15 @@ def test_get_all_page_names():
     mock_wiki_bucket = MagicMock()
     mock_blob1 = MagicMock()
     mock_blob2 = MagicMock()
-    mock_wiki_bucket.list_blobs.return_value = [mock_blob1,mock_blob2]
+    mock_wiki_bucket.list_blobs.return_value = [mock_blob1, mock_blob2]
     mock_blob1.name = 'Italian/some_page'
     mock_blob2.name = 'Italian/another_page'
-   
+
     mock_storage_client = MagicMock()
-    mock_storage_client.bucket.side_effect = [mock_user_bucket, mock_wiki_bucket, None, None]
-    
+    mock_storage_client.bucket.side_effect = [
+        mock_user_bucket, mock_wiki_bucket, None, None
+    ]
+
     backend = Backend(mock_storage_client)
     page_names = backend.get_all_page_names(mock_user)
 

@@ -2,7 +2,7 @@
 from google.cloud import storage
 import hashlib, json, string, re
 from flask_login import current_user
-from bs4 import BeautifulSoup
+
 
 
 class Backend:
@@ -19,7 +19,6 @@ class Backend:
         self.wiki_search_content = self.storage_client.bucket(
             "wiki_search_content")
 
-    
     def get_wiki_page(self, name, user_details):
         #Method retrieves user info from session and accesses users preffered language folder to load respective recipe, if there is no user session set language to english"
         if user_details.get_id():
@@ -38,7 +37,6 @@ class Backend:
                     data = f.read()
                     return data
 
-
     def get_all_page_names(self, user_details):
         #Method retrieves user info from session and accesses users preffered language folder to get all recipes in that language, if theres no user session we set language to english"
         page_names = []
@@ -52,17 +50,15 @@ class Backend:
         else:
             preffered_language = 'English'
 
-       
         blobs = self.wiki_info_bucket.list_blobs(prefix=preffered_language +
                                                  '/')
         for blob in blobs:
             name = blob.name.split('/')
             page_names.append(name[-1])
         return page_names
-    
 
     def upload(self, file):
-        #This method uploads file to the  database but also updates the inverted index with new content       
+        #This method uploads file to the  database but also updates the inverted index with new content
         blob = self.wiki_info_bucket.blob(file.filename)
         blob.upload_from_file(file, content_type=file.content_type)
 
@@ -122,9 +118,6 @@ class Backend:
                     data = f.read()
                     return data
 
-   
-
- 
     def update_language(self, new_language):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -136,7 +129,6 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
- 
     def update_night_mode(self, new_bool):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -149,7 +141,6 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-   
     def update_bookmarks(self, new_page):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -176,5 +167,3 @@ class Backend:
         user_info.pop("Password")
 
         return user_info
-
-   
