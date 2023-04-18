@@ -24,7 +24,7 @@ def make_endpoints(app, backend, logging):
     @app.route("/pages")
     def pages():
         #call get_all_page_names from backend to get the list of all the page names in google cloud storage
-        all_pages = backend.get_all_page_names()
+        all_pages = backend.get_all_page_names(current_user)
         #return the list of all page names to html inorder for it to be displayed
         return render_template("pages.html", result=all_pages)
 
@@ -32,7 +32,7 @@ def make_endpoints(app, backend, logging):
     @app.route("/pages/<page_id>")
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id)
+        page_data = backend.get_wiki_page(page_id, current_user)
         return render_template('wiki_page.html', page_data=page_data)
 
     # TODO test route
@@ -122,3 +122,5 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
+
+   
