@@ -10,7 +10,8 @@ class Backend:
     # Class prefix variable
     SALT = "Heqodap12"
 
-    def __init__(self, storage_client):
+    def __init__(self, storage_client, opener = open):
+        self.open = opener
         self.storage_client = storage_client
         # Initialize access to all buckets
         self.users_bucket = self.storage_client.bucket('users_project1')
@@ -66,7 +67,7 @@ class Backend:
             return recipe_content
 
     def file_content_file(self,file):
-        with open(file, 'r') as new:
+        with self.open(file, 'r') as new:
             recipe_content = new.read()
             return recipe_content
             
@@ -158,8 +159,6 @@ class Backend:
         for blob in blobs:
             recipe_content = self.file_content_blob(blob)
             result = self.create_inverted_index(blob, inverted_index, blob.name, recipe_content)
-        
-            #with blob.open("r") as recipes:
 
         #Writing the inverted index to gcs as a json string
         json_index = json.dumps(result)
@@ -237,4 +236,33 @@ class Backend:
 
        
 
+    def update_review(self, review, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        # Check if exists
+        json_object = blob.download_as_string()
+        if json_object:
+            reviews_list = json.loads(json_object)
+            reviews_list.append(review)
+            # Update GCS
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
+        else:
+            # If no reviews exist yet
+            reviews_list = [review]
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
 
+    def view_current_reviews(self, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        json_object = blob.download_as_string()
+        # Check if exists
+        if json_object:
+            reviews_list = json.loads(json_object)
+            sum_list = sum(reviews_list)
+            average = round(sum_list / len(reviews_list), 1)
+            return average
+        else:
+            # If no reviews exist yet
+            return 0    
