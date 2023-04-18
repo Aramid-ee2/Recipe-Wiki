@@ -123,8 +123,8 @@ def make_endpoints(app, backend, logging):
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 
-    @app.route("/wiki_page/search", methods = ["POST"])
+    @app.route("/wiki_page/search", methods=["POST"])
     def search_display():
         search_term = request.form["search"]
         results = backend.search(search_term)
-        return render_template("search_page.html", results = results)
+        return render_template("search_page.html", results=results)
