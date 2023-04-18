@@ -122,3 +122,11 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
+
+    @app.route("//pages/<page_id>/rating ", methods = ["POST"])
+    def ratings(page_id):
+        rating = request.form['rating']
+        backend.update_review(rating, page_id)
+        average_rating = backend.view_current_reviews(page_id)
+        return render_template('ratings.html', average_rating= average_rating)
+        

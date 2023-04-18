@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html>
+    <form action="/pages/{{ page_id }}/rating" method="POST">
+        <label for="rating">Rate this recipe:</label>
+        <input type="number" name="rating" id="rating" min="1" max="5" required>
+        <button type="submit">Submit</button>
+</form>
+    <h2>Recipe Ratings</h2>
+    <h3 class ="recipe_ratings"> Average Rating for {{page_id}} is {{average_rating}} </h3>
+    </body>
+</html>
