@@ -123,6 +123,7 @@ def make_endpoints(app, backend, logging):
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 
+
     @app.route("//pages/<page_id>/rating ", methods = ["POST"])
     def ratings(page_id):
         rating = request.form['rating']
@@ -130,3 +131,10 @@ def make_endpoints(app, backend, logging):
         average_rating = backend.view_current_reviews(page_id)
         return render_template('ratings.html', average_rating= average_rating)
         
+
+    @app.route("/wiki_page/search", methods = ["POST"])
+    def search_display():
+        search_term = request.form["search"]
+        results = backend.search(search_term)
+        return render_template("search_page.html", results = results)
+

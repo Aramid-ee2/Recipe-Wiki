@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Search Results</title>
+</head>
+<body>
+    {%for recipe in results%}
+    <li class = ""> 
+        <a href="/pages/{{recipe}}">{{recipe}}</a>
+    </li>
+ {% endfor %}
+</body>
