@@ -1,1 +1,66 @@
 /* This is where my CSS will go! */
+*{
+    color:#fff;
+    margin:0;
+    padding:0;
+    background-color: #00AB;
+} 
+
+
+
+/* Navigation page styling */
+
+.nav-bar{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    padding:10px;
+}
+.nav-body{
+    /* display:flex; */
+
+}
+.nav-links{
+    font-size: 20px;
+}
+.nav-links a{
+    text-decoration: none;
+}
+.nav-welcome p{
+    font-size: 30px;
+}
+
+.nav-bar2{
+
+}
+.home-body ul li, .home-body p{
+    padding-top:10px;
+}
+
+
+/* pages styling */
+.pages-body{
+    /* padding:20px; */
+}
+
+/* about pages styling */
+
+.about-wiki{
+    text-align: center;
+}
+.about-wiki p{
+    padding-top:10px;
+    padding-bottom:10px;
+}
+
+
+.user-profile{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+.user-profile div img{
+    /* width:500px; */
+    height:450px;
+    width:400px;
+}
