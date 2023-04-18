@@ -4,7 +4,6 @@ import hashlib, json, string, re
 from flask_login import current_user
 
 
-
 class Backend:
 
     # Class prefix variable
