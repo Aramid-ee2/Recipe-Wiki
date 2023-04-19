@@ -29,7 +29,7 @@ def make_endpoints(app, backend, logging):
         return render_template("pages.html", result=all_pages)
 
     # Pages Route
-    @app.route("/pages/<page_id>", methods = ['POST','GET'])
+    @app.route("/pages/<page_id>", methods=['POST', 'GET'])
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id, current_user)
