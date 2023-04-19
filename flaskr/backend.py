@@ -264,6 +264,8 @@ class Backend:
         if blob.exists():
             json_object = blob.download_as_string()
             reviews_list = json.loads(json_object)
+            reviews_list = [int(x) for x in reviews_list]
+            print(reviews_list)
             sum_list = sum(reviews_list)
             average = round(sum_list / len(reviews_list), 1)
             return average
