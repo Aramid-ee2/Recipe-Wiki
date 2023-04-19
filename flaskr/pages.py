@@ -29,18 +29,26 @@ def make_endpoints(app, backend, logging):
         return render_template("pages.html", result=all_pages)
 
     # Pages Route
-    @app.route("/pages/<page_id>")
+    @app.route("/pages/<page_id>", methods=["POST"])
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id, current_user)
-        return render_template('wiki_page.html', page_data=page_data)
+        print("page info is", page_id)
+        print("page info is", page_data)
+        rating = request.form["rating"]
+        backend.update_review(rating, page_id)
+        average_rating = backend.view_current_reviews(page_id)
+        return render_template('wiki_page.html',
+                               page_data=page_data,
+                               page_id=page_id,
+                               average_rating=average_rating)
 
     # TODO test route
     @app.route("/pages/<page_id>")
     def bookmark_page(page_id):
         backend.update_bookmarks(page_id)
         #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id)
+        page_data = backend.get_wiki_page(page_id, current_user)
 
         return render_template('wiki_page.html', page_data=page_data)
 
@@ -123,18 +131,15 @@ def make_endpoints(app, backend, logging):
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
 
-
-    @app.route("//pages/<page_id>/rating ", methods = ["POST"])
-    def ratings(page_id):
-        rating = request.form['rating']
-        backend.update_review(rating, page_id)
-        average_rating = backend.view_current_reviews(page_id)
-        return render_template('ratings.html', average_rating= average_rating)
-        
-
-    @app.route("/wiki_page/search", methods = ["POST"])
+    @app.route("/wiki_page/search", methods=["POST"])
     def search_display():
         search_term = request.form["search"]
         results = backend.search(search_term)
-        return render_template("search_page.html", results = results)
+        return render_template("search_page.html", results=results)
 
+    @app.route("/pages/<page_id>/rating", methods=["POST"])
+    def rating(page_id):
+        rating = request.form['rating']
+        print("Recipe rating is ", rating)
+        print("Recipe name is", page_id)
+        return redirect(url_for('get_page', page_id=page_id))

@@ -10,7 +10,8 @@ class Backend:
     # Class prefix variable
     SALT = "Heqodap12"
 
-    def __init__(self, storage_client):
+    def __init__(self, storage_client, opener=open):
+        self.open = opener
         self.storage_client = storage_client
         # Initialize access to all buckets
         self.users_bucket = self.storage_client.bucket('users_project1')
@@ -18,6 +19,7 @@ class Backend:
         self.authors_buckets = self.storage_client.bucket("recipe_authors")
         self.wiki_search_content = self.storage_client.bucket(
             "wiki_search_content")
+        self.reviews_bucket = self.storage_client.bucket("page_reviews")
 
     # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name, user_details):
@@ -60,17 +62,18 @@ class Backend:
             page_names.append(name[-1])
         return page_names
 
-    def file_content_blob(self,blob):
+    def file_content_blob(self, blob):
         with blob.open("r") as new:
             recipe_content = new.read()
             return recipe_content
 
-    def file_content_file(self,file):
-        with open(file, 'r') as new:
+    def file_content_file(self, file):
+        with self.open(file, 'r') as new:
             recipe_content = new.read()
             return recipe_content
-            
-    def create_inverted_index(self, file, inverted_index, file_name, recipe_content):
+
+    def create_inverted_index(self, file, inverted_index, file_name,
+                              recipe_content):
         stop_words = {
             'the', 'or', 'in', 'is', 'a', 'an', 'of', 'at', 'from', 'to'
         }
@@ -83,7 +86,7 @@ class Backend:
                     inverted_index[word.lower()] = [file_name]
                 else:
                     if file_name not in inverted_index[word.lower()]:
-                        inverted_index[word.lower()].append(file_name )
+                        inverted_index[word.lower()].append(file_name)
         return inverted_index
 
     def upload(self, file):
@@ -92,6 +95,8 @@ class Backend:
         # Upload actual file to bucket
         blob.upload_from_file(file, content_type=file.content_type)
         blob = self.wiki_search_content.blob("inverted_index")
+        if not blob.exists():
+            self.initial_index()
         with blob.open("r") as f:
             # Retrieving inverted index from json file in GCS
             json_index = f.read()
@@ -157,12 +162,12 @@ class Backend:
         blobs = self.wiki_info_bucket.list_blobs(prefix="English/")
         for blob in blobs:
             recipe_content = self.file_content_blob(blob)
-            result = self.create_inverted_index(blob, inverted_index, blob.name, recipe_content)
-        
-            #with blob.open("r") as recipes:
+            inverted_index = self.create_inverted_index(blob, inverted_index,
+                                                        blob.name,
+                                                        recipe_content)
 
         #Writing the inverted index to gcs as a json string
-        json_index = json.dumps(result)
+        json_index = json.dumps(inverted_index)
         # Reach out to GCS to access bucket where inverted index would be stored
         blob = self.wiki_search_content.blob("inverted_index")
         with blob.open("w") as index:
@@ -220,38 +225,6 @@ class Backend:
         user_info.pop("Password")
         return user_info
 
-
-   def update_review(self, review, wiki_page):
-        blob = self.reviews_bucket.blob(wiki_page)
-        # Check if exists
-        json_object = blob.download_as_string()
-        if json_object:
-            reviews_list = json.loads(json_object)
-            reviews_list.append(review)
-            # Update GCS
-            with blob.open("w") as f:
-                json_object = json.dumps(reviews_list)
-                f.write(json_object)
-        else:
-            # If no reviews exist yet
-            reviews_list = [review]
-            with blob.open("w") as f:
-                json_object = json.dumps(reviews_list)
-                f.write(json_object)
-
-    def view_current_reviews(self, wiki_page):
-        blob = self.reviews_bucket.blob(wiki_page)
-        json_object = blob.download_as_string()
-        # Check if exists
-        if json_object:
-            reviews_list = json.loads(json_object)
-            sum_list = sum(reviews_list)
-            average = round(sum_list / len(reviews_list), 1)
-            return average
-        else:
-            # If no reviews exist yet
-            return 0
-
     def search(self, search_term):
         result_docs = set()
         blob = self.wiki_search_content.blob("inverted_index")
@@ -265,10 +238,35 @@ class Backend:
                     for files in inverted_index[term]:
                         file_name = files.split('/')
                         result_docs.add(file_name[-1])
-            return result_docs                  
+            return result_docs
 
-       
+    def update_review(self, review, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        # Check if exists
+        if blob.exists():
+            json_object = blob.download_as_string()
+            reviews_list = json.loads(json_object)
+            reviews_list.append(review)
+            # Update GCS
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
+        else:
+            # If no reviews exist yet
+            blob = self.reviews_bucket.blob(wiki_page)
+            reviews_list = [review]
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
 
-
-    
-
+    def view_current_reviews(self, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        if blob.exists():
+            json_object = blob.download_as_string()
+            reviews_list = json.loads(json_object)
+            sum_list = sum(reviews_list)
+            average = round(sum_list / len(reviews_list), 1)
+            return average
+        else:
+            # If no reviews exist yet
+            return 0

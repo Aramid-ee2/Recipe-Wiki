@@ -66,3 +66,35 @@
     height:450px;
     width:400px;
 }
+
+/* recipe pages styling */
+.recipe_form{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;    
+}
+
+
+.recipe_header{
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 20px;    
+}
+
+.details{
+    float: right;    
+    
+}
+
+
+.container{
+    margin-top: 20px;
+    padding-bottom: 20px;
+}
+

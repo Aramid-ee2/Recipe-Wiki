@@ -5,8 +5,14 @@
 </head>
 <body>
     {% include 'navigation_bar.html' %}
-    {% include 'bookmark.html' %}
-    {% include 'ratings.html' %}    
+    <div class = "container">
+        {% include 'bookmark.html' %}
+    </div>
+    <div class = "container">
+        {% with page_id=page_id, average_rating=average_rating %} 
+            {% include 'ratings.html' %} 
+        {% endwith %}
+    </div>
     {{ page_data | safe }}
 </body>
 </html>
