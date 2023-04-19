@@ -43,32 +43,54 @@ def test_sign_in():
     assert signed_in == True
 
 
-# #fix test
-# def test_upload():
-#     #Mocking
+#fix test
+def test_upload():
+    #Mocking
 
-#     mock_storage_client = MagicMock()
-#     mock_search_bucket = MagicMock()
-#     mock_wiki_bucket = MagicMock()
-#     mock_wiki_blob = MagicMock()
-#     mock_search_blob = MagicMock()
-#     mock_file = MagicMock()
+    mock_storage_client = MagicMock()
+    mock_search_bucket = MagicMock()
+    mock_wiki_bucket = MagicMock()
+    mock_wiki_blob = MagicMock()
+    mock_search_blob = MagicMock()
+    mock_file = MagicMock()
+    mock_file.name = "abula.html"
 
-#     mock_wiki_bucket.blob.return_value = mock_wiki_blob
-#     mock_search_bucket.blob.return_value = mock_search_blob
-#     mock_search_blob.open.return_value.__enter__.return_value.read.return_value = dumps({
-#         "rice": ['Seasoned_rice.html','fried_rice.html'],
-#         "shrimp": ['shrimp_alfredo.html']
-#     })
-#     mock_storage_client.bucket.side_effect = [None, mock_wiki_bucket, None,mock_search_bucket, None]
-#     # Run code we are interested in testing
-#     backend = Backend(mock_storage_client)
-#     backend.upload(mock_file)
+    mock_wiki_bucket.blob.return_value = mock_wiki_blob
+    mock_search_bucket.blob.return_value = mock_search_blob
+    mock_search_blob.open.return_value.__enter__.return_value.read.return_value = dumps(
+        {
+            "rice": ['Seasoned_rice.html', 'fried_rice.html'],
+            "shrimp": ['shrimp_alfredo.html']
+        })
 
-#     # Assertions
-#     # mock_storage_client.bucket().blob().upload_from_file.assert_called_with(
-#     #     mock_file, content_type=mock_file.content_type)
-#     mock_wiki_blob.upload_from_file.assert_called_with(mock_file, content_type=mock_file.content_type)
+    mock_storage_client.bucket.side_effect = [
+        None, mock_wiki_bucket, None, mock_search_bucket, None
+    ]
+
+    # Run code we are interested in testing
+    backend = Backend(mock_storage_client)
+    backend.file_content_file = MagicMock()
+    backend.file_content_file.return_value = "<h1> Amala </>"
+    backend.create_inverted_index = MagicMock()
+    backend.create_inverted_index.return_value = {
+        "rice": ['Seasoned_rice.html', 'fried_rice.html'],
+        "shrimp": ['shrimp_alfredo.html'],
+        "amala": ['abula.html']
+    }
+    json_index = dumps({
+        "rice": ['Seasoned_rice.html', 'fried_rice.html'],
+        "shrimp": ['shrimp_alfredo.html'],
+        "amala": ['abula.html']
+    })
+    backend.upload(mock_file)
+
+    # Assertions
+    # mock_storage_client.bucket().blob().upload_from_file.assert_called_with(
+    #     mock_file, content_type=mock_file.content_type)
+    mock_wiki_blob.upload_from_file.assert_called_with(
+        mock_file, content_type=mock_file.content_type)
+    assert backend.file_content_file.call_count == 1
+    mock_search_blob.open().__enter__().write.assert_called_with(json_index)
 
 
 def test_init():
@@ -91,7 +113,6 @@ def test_file_content_blob():
     assert backend.file_content_blob(mock_blob) == 'We are going to Seattle'
 
 
-#fix test
 def test_file_content_file():
     mock_storage_client = MagicMock()
     mock_open = MagicMock()

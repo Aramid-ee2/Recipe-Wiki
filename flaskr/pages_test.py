@@ -140,3 +140,11 @@ def test_rating(client, mock_backend):
     response = client.post("/pages/some_page/rating", data={'rating': 4})
     assert response.status_code == 302
     assert response.location == "/pages/some_page"
+
+
+def tes_search(client, mock_backend):
+    response = client.post("/wiki_page/search", data={'search': 'rice'})
+    mock_backend.search.return_value = {'jollof.html', 'shrimp_rice.html'}
+    assert response.status_code == 200
+    assert b"jollof.html" in response.dat
+    mock_backend.search.assert_called_once_with("rice")
