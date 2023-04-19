@@ -33,8 +33,6 @@ def make_endpoints(app, backend, logging):
     def get_page(page_id):
         #call get_wiki_page from backend to get the respective page data depending on page_id
         page_data = backend.get_wiki_page(page_id, current_user)
-        print("page info is", page_id)
-        print("page info is", page_data)
         rating = request.form["rating"]
         backend.update_review(rating, page_id)
         average_rating = backend.view_current_reviews(page_id)
@@ -140,6 +138,4 @@ def make_endpoints(app, backend, logging):
     @app.route("/pages/<page_id>/rating", methods=["POST"])
     def rating(page_id):
         rating = request.form['rating']
-        print("Recipe rating is ", rating)
-        print("Recipe name is", page_id)
         return redirect(url_for('get_page', page_id=page_id))

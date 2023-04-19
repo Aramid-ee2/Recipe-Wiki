@@ -66,10 +66,12 @@ def test_pages_route(client):
 
 def test_parametrized_routes(client, mock_backend):
     mock_backend.get_wiki_page.return_value = 'a great recipe'
+    mock_backend.view_current_reviews.return_value = 4
 
     response = client.get("/pages/some_page")
     assert response.status_code == 200
     assert 'a great recipe' in str(response.data)
+    assert 'Average Rating for' in str(response.data)
 
 
 #Test about route
@@ -132,3 +134,9 @@ def test_logout(client, mock_backend):
         assert not current_user.is_authenticated
         # Check that the response redirects to the home page
         assert response.location == "/home"
+
+
+def test_rating(client, mock_backend):
+    response = client.post("/pages/some_page/rating", data={'rating': 4})
+    assert response.status_code == 302
+    assert response.location == "/pages/some_page"

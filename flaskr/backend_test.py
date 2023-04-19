@@ -60,7 +60,7 @@ def test_sign_in():
 #         "rice": ['Seasoned_rice.html','fried_rice.html'],
 #         "shrimp": ['shrimp_alfredo.html']
 #     })
-#     mock_storage_client.bucket.side_effect = [None, mock_wiki_bucket, None,mock_search_bucket]
+#     mock_storage_client.bucket.side_effect = [None, mock_wiki_bucket, None,mock_search_bucket, None]
 #     # Run code we are interested in testing
 #     backend = Backend(mock_storage_client)
 #     backend.upload(mock_file)
@@ -127,7 +127,7 @@ def test_get_wiki_page():
 
     mock_storage_client = MagicMock()
     mock_storage_client.bucket.side_effect = [
-        mock_user_bucket, mock_wiki_bucket, None, None
+        mock_user_bucket, mock_wiki_bucket, None, None, None
     ]
 
     backend = Backend(mock_storage_client)
@@ -157,7 +157,7 @@ def test_get_all_page_names():
 
     mock_storage_client = MagicMock()
     mock_storage_client.bucket.side_effect = [
-        mock_user_bucket, mock_wiki_bucket, None, None
+        mock_user_bucket, mock_wiki_bucket, None, None, None
     ]
 
     backend = Backend(mock_storage_client)
@@ -224,7 +224,7 @@ def test_initial_index():
     mock_search_bucket.blob.return_value = mock_blob2
 
     mock_storage_client.bucket.side_effect = [
-        None, mock_wiki_bucket, None, mock_search_bucket
+        None, mock_wiki_bucket, None, mock_search_bucket, None
     ]
 
     # Act
@@ -255,7 +255,7 @@ def test_search():
         })
 
     mock_storage_client.bucket.side_effect = [
-        None, None, None, mock_search_bucket
+        None, None, None, mock_search_bucket, None
     ]
     backend = Backend(mock_storage_client)
 
