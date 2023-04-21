@@ -42,7 +42,8 @@ def make_endpoints(app, backend, logging):
         return render_template('wiki_page.html',
                                page_data=page_data,
                                page_id=page_id,
-                               average_rating=average_rating)
+                               average_rating=average_rating,
+                               settings=settings)
 
     @app.route("/wiki_page/bookmark", methods=["PUT"])
     def bookmark_page():
@@ -50,8 +51,6 @@ def make_endpoints(app, backend, logging):
         backend.update_bookmarks(request.form["bookmark"])
         settings = backend.get_current_settings()
         return render_template('pages.html', settings=settings)
-
-   
 
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])
@@ -120,7 +119,7 @@ def make_endpoints(app, backend, logging):
     @login_required
     def logout():
         logout_user()
-        return render_template("home.html", settings=settings)
+        return redirect(url_for("home"))
 
     # Settings Route
     @app.route("/settings")

@@ -274,6 +274,8 @@ def test_search():
     backend = Backend(mock_storage_client)
 
     assert backend.search("rice") == {'Seasoned_rice.html', 'fried_rice.html'}
+
+
 def test_update_language():
     # Variables
     user_name = "gabriel"
