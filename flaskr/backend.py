@@ -93,8 +93,7 @@ class Backend:
                     data = f.read()
                     return data
 
-    # TODO test
-    def update_language(self, new_language):
+    def update_language(self, new_language, current_user=current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         json_object = blob.download_as_string()
@@ -105,42 +104,52 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
-    def update_night_mode(self, new_bool):
+    def update_night_mode(self, current_user=current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         # Reading blob
         json_object = blob.download_as_string()
         user_info = json.loads(json_object)
-        user_info["Night_Mode"] = new_bool
+        if user_info["Night_Mode"]:
+            user_info["Night_Mode"] = False
+        else:
+            user_info["Night_Mode"] = True
         # Update GCS
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
-    def update_bookmarks(self, new_page):
-        # Retrieve user blob.
-        blob = self.users_bucket.blob(current_user.get_id())
-        # Reading blob
-        json_object = blob.download_as_string()
-        user_info = json.loads(json_object)
-        # Pass list through a set to prevent duplicate pages from being added
-        temp = set(user_info["Bookmarks"])
-        temp.add(new_page)
-        # Turn back into list for json file
-        new_list = list(temp)
-        user_info["Bookmarks"] = new_list
-        # Update GCS
-        with blob.open("w") as f:
-            json_object = json.dumps(user_info)
-            f.write(json_object)
+    # def update_bookmarks(self, new_page):
+    #     # Retrieve user blob.
+    #     blob = self.users_bucket.blob(current_user.get_id())
+    #     # Reading blob
+    #     json_object = blob.download_as_string()
+    #     user_info = json.loads(json_object)
+    #     # Pass list through a set to prevent duplicate pages from being added
+    #     temp = set(user_info["Bookmarks"])
+    #     temp.add(new_page)
+    #     # Turn back into list for json file
+    #     new_list = list(temp)
+    #     user_info["Bookmarks"] = new_list
+    #     # Update GCS
+    #     with blob.open("w") as f:
+    #         json_object = json.dumps(user_info)
+    #         f.write(json_object)
 
-    def get_current_settings(self):
-        # Retrieve user blob.
-        blob = self.users_bucket.blob(current_user.get_id())
-        # Reading blob
-        json_object = blob.download_as_string()
-        user_info = json.loads(json_object)
-        user_info.pop("Password")
-        return user_info
+    def get_current_settings(self, current_user=current_user):
+        if not current_user.get_id():
+            user_info = {
+                "Language": "English",
+                "Night_Mode": False,
+                "Bookmarks": []
+            }
+            return user_info
+        else:
+            # Retrieve user blob.
+            blob = self.users_bucket.blob(current_user.get_id())
+            # Reading blob
+            json_object = blob.download_as_string()
+            user_info = json.loads(json_object)
+            user_info.pop("Password")
+            # If user has not been created yet
+            return user_info

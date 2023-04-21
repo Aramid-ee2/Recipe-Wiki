@@ -1,20 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Wikipedia Pages</title>
-</head>
-<body>
-<form action="/wiki_page/search" method="POST">
-            <input type="text" name="search" placeholder="Search recipes...">
-            <input type="submit" value="Search">
-</form>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+    Wiki Pages 
+{% endblock %}
+{% block content %}
 <h1> Recipes</h1>
 <p>Our wikipedia is about food recipes. The pages in this wiki are: </p>
 {%for page in result%}
 <li> 
     <a href="/pages/{{page}}">{{page}}</a>
-
- </li>
- {% endfor %}
-
+    
+</li>
+{% endfor %}
+{% endblock %}
 
