@@ -26,21 +26,23 @@ def make_endpoints(app, backend, logging):
     def pages():
         settings = backend.get_current_settings()
         #call get_all_page_names from backend to get the list of all the page names in google cloud storage
-        all_pages = backend.get_all_page_names()
+        all_pages = backend.get_all_page_names(current_user)
         #return the list of all page names to html inorder for it to be displayed
         return render_template("pages.html",
                                result=all_pages,
                                settings=settings)
 
     # Pages Route
-    @app.route("/pages/<page_id>")
+    @app.route("/pages/<page_id>", methods=['POST', 'GET'])
     def get_page(page_id):
         settings = backend.get_current_settings()
         #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id)
-
+        page_data = backend.get_wiki_page(page_id, current_user)
+        average_rating = backend.view_current_reviews(page_id)
         return render_template('wiki_page.html',
                                page_data=page_data,
+                               page_id=page_id,
+                               average_rating=average_rating,
                                settings=settings)
 
     @app.route("/wiki_page/bookmark", methods=["PUT"])
@@ -117,7 +119,7 @@ def make_endpoints(app, backend, logging):
     @login_required
     def logout():
         logout_user()
-        return render_template("home.html", settings=settings)
+        return redirect(url_for("home"))
 
     # Settings Route
     @app.route("/settings")
@@ -137,3 +139,16 @@ def make_endpoints(app, backend, logging):
         backend.update_language(request.form["fav_language"])
         settings = backend.get_current_settings()
         return render_template("settings.html", settings=settings)
+
+    @app.route("/wiki_page/search", methods=["POST"])
+    def search_display():
+        search_term = request.form["search"]
+        results = backend.search(search_term)
+        return render_template("search_page.html", results=results)
+
+    @app.route("/pages/<page_id>/rating", methods=["POST"])
+    def rating(page_id):
+        if request.method == 'POST':
+            rating = request.form["rating"]
+            backend.update_review(int(rating), page_id)
+        return redirect(url_for('get_page', page_id=page_id))
