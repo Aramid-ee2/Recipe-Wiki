@@ -1,19 +1,8 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-    <head>
-        
-        <title>{% block page_name %} 
-
-        {% endblock %}
-    </title>
-    </head>
-</head>
-
-<body> {% block content %}
-    {% include 'navigation_bar.html' %}
-    
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+Main 
+{% endblock %}
+{% block content %}
     <div>       
         Gabriel Terrazas
         <br>
@@ -22,6 +11,4 @@
         Julian Pacheco
         <br>
     </div>
-    {% endblock %}
-</body>
-</html>
+{% endblock %}

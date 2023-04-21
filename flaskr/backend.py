@@ -106,7 +106,7 @@ class Backend:
         blob = self.users_bucket.blob(user_name)
         # Add prefix and hash password
         with blob.open("w") as f:
-            #Add username to password hash so different users with same password get different hash value
+            # Add username to password hash so different users with same password get different hash value
             encoded = self.SALT + user_name + password
             password = hashlib.sha256(encoded.encode()).hexdigest()
             user_settings = {
@@ -119,9 +119,9 @@ class Backend:
             f.write(json_object)
 
     def sign_in(self, user_name, password):
-        #retrieve a reference to blob object named respective user_names stored in Google Cloud storage
+        # retrieve a reference to blob object named respective user_names stored in Google Cloud storage
         blob = self.users_bucket.blob(user_name)
-        #Hashing the password
+        # Hashing the password
         password = self.SALT + user_name + password
         password = hashlib.sha256(password.encode()).hexdigest()
         with blob.open("r") as f:
@@ -129,21 +129,21 @@ class Backend:
             json_object = f.read()
             user_info = json.loads(json_object)
             user_password = user_info["Password"]
-            #Checks if hashed password matches the content of the blob (password in bucket)
+            # Checks if hashed password matches the content of the blob (password in bucket)
             if user_password != password:
                 return False
-                #if the data is the same as the content of blob return True else return False
+                # if the data is the same as the content of blob return True else return False
             return True
 
     def get_image(self, name):
-        #get_image receives the image as a parameter to the method
-        #calling the list_blobs method on storage_client to list all the blobs stored in the recipe_authors bucket and store it in "blob"
+        # get_image receives the image as a parameter to the method
+        # calling the list_blobs method on storage_client to list all the blobs stored in the recipe_authors bucket and store it in "blob"
         blob = self.storage_client.list_blobs("recipe_authors")
         for b in blob:
-            #going through blob to check for the image(name)
+            # going through blob to check for the image(name)
             if b.name == name:
                 with b.open("rb") as f:
-                    #open the blob(image file in bucket) in binary format, read the data and return it
+                    # open the blob(image file in bucket) in binary format, read the data and return it
                     data = f.read()
                     return data
 
@@ -164,7 +164,7 @@ class Backend:
         with blob.open("w") as index:
             index.write(json_index)
 
-    def update_language(self, new_language):
+    def update_language(self, new_language, current_user=current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         json_object = blob.download_as_string()
@@ -175,19 +175,22 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    def update_night_mode(self, new_bool):
+    def update_night_mode(self, current_user=current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         # Reading blob
         json_object = blob.download_as_string()
         user_info = json.loads(json_object)
-        user_info["Night_Mode"] = new_bool
+        if user_info["Night_Mode"]:
+            user_info["Night_Mode"] = False
+        else:
+            user_info["Night_Mode"] = True
         # Update GCS
         with blob.open("w") as f:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    def update_bookmarks(self, new_page):
+    def update_bookmarks(self, new_page, current_user=current_user):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
         # Reading blob
@@ -204,14 +207,54 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    def get_current_settings(self):
-        # Retrieve user blob.
-        blob = self.users_bucket.blob(current_user.get_id())
-        # Reading blob
-        json_object = blob.download_as_string()
-        user_info = json.loads(json_object)
-        user_info.pop("Password")
-        return user_info
+    def get_current_settings(self, current_user=current_user):
+        if not current_user.get_id():
+            user_info = {
+                "Language": "English",
+                "Night_Mode": False,
+                "Bookmarks": []
+            }
+            return user_info
+        else:
+            # Retrieve user blob.
+            blob = self.users_bucket.blob(current_user.get_id())
+            # Reading blob
+            json_object = blob.download_as_string()
+            user_info = json.loads(json_object)
+            user_info.pop("Password")
+            # If user has not been created yet
+            return user_info
+
+    def update_review(self, review, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        # Check if exists
+        if blob.exists():
+            json_object = blob.download_as_string()
+            reviews_list = json.loads(json_object)
+            reviews_list.append(review)
+            # Update GCS
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
+        else:
+            # If no reviews exist yet
+            reviews_list = [review]
+            with blob.open("w") as f:
+                json_object = json.dumps(reviews_list)
+                f.write(json_object)
+
+    def view_current_reviews(self, wiki_page):
+        blob = self.reviews_bucket.blob(wiki_page)
+        # Check if exists
+        if blob.exists():
+            json_object = blob.download_as_string()
+            reviews_list = json.loads(json_object)
+            sum_list = sum(reviews_list)
+            average = round(sum_list / len(reviews_list), 1)
+            return average
+        else:
+            # If no reviews exist yet
+            return 0
 
     def search(self, search_term):
         result_docs = set()
@@ -227,9 +270,3 @@ class Backend:
                         file_name = files.split('/')
                         result_docs.add(file_name[-1])
             return result_docs
-
-    def update_review(self, rating):
-        pass
-
-    def view_current_reviews(self, wiki_page):
-        return 4
