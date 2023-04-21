@@ -216,7 +216,6 @@ def test_update_inverted_index():
                                          file_content) == expected_index
 
 
-#fix test
 def test_initial_index():
     inverted_index = {}
 

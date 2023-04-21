@@ -22,7 +22,6 @@ class Backend:
         self.reviews_bucket = self.storage_client.bucket("page_reviews")
 
     def get_wiki_page(self, name, user_details):
-        #blobs = self.storage_client.list_blobs("wiki_info_project1")
         if user_details.get_id():
             blob = self.users_bucket.blob(user_details.get_id())
             json_object = blob.download_as_string()
@@ -31,7 +30,7 @@ class Backend:
         else:
             preffered_language = 'English'
 
-        blob = self.wiki_info_bucket.list_blobs(preffered_language + '/')
+        blob = self.wiki_info_bucket.blob(preffered_language + '/' + name)
         with blob.open("r") as f:
             data = f.read()
             return data
@@ -229,8 +228,8 @@ class Backend:
                         result_docs.add(file_name[-1])
             return result_docs
 
-    def update_review(self, review, wiki_page):
+    def update_review(self, rating):
         pass
 
     def view_current_reviews(self, wiki_page):
-        return 0
+        return 4

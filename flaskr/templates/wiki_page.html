@@ -8,11 +8,18 @@
     <div class = "container">
         {% include 'bookmark.html' %}
     </div>
-    <div class = "container">
-        {% with page_id=page_id, average_rating=average_rating %} 
-            {% include 'ratings.html' %} 
-        {% endwith %}
+    <div class = "container"> 
+        <h3 class = "recipe_header">Submit a rating</h3>
+        <form class = "recipe_form" action="/pages/{{page_id}}" method="POST">
+            <input type="number" name="rating" id="rating" min="1" max="5" required>
+            <input type="submit" value="Submit">
+        </form>
+        <details>
+            <summary class = "details">View Average Rating</summary>
+            <h3 class="recipe_ratings">Average Rating for {{page_id}} is {{average_rating}}</h3>
+        </details>
     </div>
+      
     {{ page_data | safe }}
 </body>
 </html>
