@@ -21,7 +21,6 @@ class Backend:
             "wiki_search_content")
         self.reviews_bucket = self.storage_client.bucket("page_reviews")
 
-    # TODO: update method to search file from selected language (default english)
     def get_wiki_page(self, name, user_details):
         #blobs = self.storage_client.list_blobs("wiki_info_project1")
         if user_details.get_id():
@@ -32,18 +31,13 @@ class Backend:
         else:
             preffered_language = 'English'
 
-        blobs = self.wiki_info_bucket.list_blobs(prefix=preffered_language +
-                                                 '/')
-        for blob in blobs:
-            if blob.name == preffered_language + '/' + name:
-                with blob.open("r") as f:
-                    data = f.read()
-                    return data
+        blobs = self.wiki_info_bucket.blob(prefix=preffered_language + '/')
+        with blob.open("r") as f:
+            data = f.read()
+            return data
 
-    #TODO: Update this method to include users preferred language
     def get_all_page_names(self, user_details):
         page_names = []
-        #print(current_user)
         #To load recipe pages based on user's preffered language user blob needs to be retrieved.
         if user_details.get_id():
             blob = self.users_bucket.blob(user_details.get_id())
@@ -72,8 +66,7 @@ class Backend:
             recipe_content = new.read()
             return recipe_content
 
-    def create_inverted_index(self, file, inverted_index, file_name,
-                              recipe_content):
+    def update_inverted_index(self, inverted_index, file_name, recipe_content):
         stop_words = {
             'the', 'or', 'in', 'is', 'a', 'an', 'of', 'at', 'from', 'to'
         }
@@ -102,8 +95,8 @@ class Backend:
             json_index = f.read()
             inverted_index = json.loads(json_index)
             recipe_content = self.file_content_file(file)
-            updated = self.create_inverted_index(file, inverted_index,
-                                                 file.filename, recipe_content)
+            updated = self.update_inverted_index(inverted_index, file.filename,
+                                                 recipe_content)
             #Writing the updated inverted index to gcs as a json string
             json_index = json.dumps(updated)
             # Reach out to GCS to access bucket where inverted index is stored and rewrite to it
@@ -155,14 +148,13 @@ class Backend:
                     data = f.read()
                     return data
 
-    #TODO: Figure how to extract texts from html files
     def initial_index(self):
         inverted_index = {}
         #Call list_blobs method to get all the blobs in wiki info bucket so I can index their respective contents
         blobs = self.wiki_info_bucket.list_blobs(prefix="English/")
         for blob in blobs:
             recipe_content = self.file_content_blob(blob)
-            inverted_index = self.create_inverted_index(blob, inverted_index,
+            inverted_index = self.update_inverted_index(inverted_index,
                                                         blob.name,
                                                         recipe_content)
 
@@ -173,7 +165,6 @@ class Backend:
         with blob.open("w") as index:
             index.write(json_index)
 
-    # TODO test
     def update_language(self, new_language):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -185,7 +176,6 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
     def update_night_mode(self, new_bool):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -198,7 +188,6 @@ class Backend:
             json_object = json.dumps(user_info)
             f.write(json_object)
 
-    # TODO test
     def update_bookmarks(self, new_page):
         # Retrieve user blob.
         blob = self.users_bucket.blob(current_user.get_id())
@@ -241,32 +230,7 @@ class Backend:
             return result_docs
 
     def update_review(self, review, wiki_page):
-        blob = self.reviews_bucket.blob(wiki_page)
-        # Check if exists
-        if blob.exists():
-            json_object = blob.download_as_string()
-            reviews_list = json.loads(json_object)
-            reviews_list.append(review)
-            # Update GCS
-            with blob.open("w") as f:
-                json_object = json.dumps(reviews_list)
-                f.write(json_object)
-        else:
-            # If no reviews exist yet
-            blob = self.reviews_bucket.blob(wiki_page)
-            reviews_list = [review]
-            with blob.open("w") as f:
-                json_object = json.dumps(reviews_list)
-                f.write(json_object)
+        pass
 
     def view_current_reviews(self, wiki_page):
-        blob = self.reviews_bucket.blob(wiki_page)
-        if blob.exists():
-            json_object = blob.download_as_string()
-            reviews_list = json.loads(json_object)
-            sum_list = sum(reviews_list)
-            average = round(sum_list / len(reviews_list), 1)
-            return average
-        else:
-            # If no reviews exist yet
-            return 0
+        return 0

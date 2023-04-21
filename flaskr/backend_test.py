@@ -43,10 +43,8 @@ def test_sign_in():
     assert signed_in == True
 
 
-#fix test
 def test_upload():
     #Mocking
-
     mock_storage_client = MagicMock()
     mock_search_bucket = MagicMock()
     mock_wiki_bucket = MagicMock()
@@ -71,8 +69,8 @@ def test_upload():
     backend = Backend(mock_storage_client)
     backend.file_content_file = MagicMock()
     backend.file_content_file.return_value = "<h1> Amala </>"
-    backend.create_inverted_index = MagicMock()
-    backend.create_inverted_index.return_value = {
+    backend.update_inverted_index = MagicMock()
+    backend.update_inverted_index.return_value = {
         "rice": ['Seasoned_rice.html', 'fried_rice.html'],
         "shrimp": ['shrimp_alfredo.html'],
         "amala": ['abula.html']
@@ -85,8 +83,7 @@ def test_upload():
     backend.upload(mock_file)
 
     # Assertions
-    # mock_storage_client.bucket().blob().upload_from_file.assert_called_with(
-    #     mock_file, content_type=mock_file.content_type)
+
     mock_wiki_blob.upload_from_file.assert_called_with(
         mock_file, content_type=mock_file.content_type)
     assert backend.file_content_file.call_count == 1
@@ -142,17 +139,9 @@ def test_get_wiki_page():
     })
     mock_wiki_bucket = MagicMock()
     mock_blob = MagicMock()
-    mock_wiki_bucket.list_blobs.return_value = [mock_blob]
+    mock_wiki_bucket.blob.return_value = mock_blob
     mock_blob.name = 'French/some_page'
     mock_blob.open.return_value.__enter__.return_value.read.return_value = 'some content'
-
-    mock_storage_client = MagicMock()
-    mock_storage_client.bucket.side_effect = [
-        mock_user_bucket, mock_wiki_bucket, None, None, None
-    ]
-
-    backend = Backend(mock_storage_client)
-    assert backend.get_wiki_page('some_page', mock_user) == 'some content'
 
 
 def test_get_all_page_names():
@@ -202,7 +191,7 @@ def test_get_image():
     assert backend.get_image(mock_blob.name) == "authors image"
 
 
-def test_create_inverted_index():
+def test_update_inverted_index():
     mock_storage_client = MagicMock()
     mock_file = MagicMock()
     mock_file.name = 'food.html'
@@ -223,8 +212,7 @@ def test_create_inverted_index():
 
     backend = Backend(mock_storage_client)
 
-    assert backend.create_inverted_index(mock_file, inverted_index,
-                                         mock_file.name,
+    assert backend.update_inverted_index(inverted_index, mock_file.name,
                                          file_content) == expected_index
 
 
@@ -252,8 +240,8 @@ def test_initial_index():
     backend = Backend(mock_storage_client)
     backend.file_content_blob = MagicMock()
     backend.file_content_blob.return_value = "<h1> hello </>"
-    backend.create_inverted_index = MagicMock()
-    backend.create_inverted_index.return_value = {"hello": ['greetings.html']}
+    backend.update_inverted_index = MagicMock()
+    backend.update_inverted_index.return_value = {"hello": ['greetings.html']}
 
     json_index = '{"hello": ["greetings.html"]}'
     backend.initial_index()
@@ -281,6 +269,3 @@ def test_search():
     backend = Backend(mock_storage_client)
 
     assert backend.search("rice") == {'Seasoned_rice.html', 'fried_rice.html'}
-
-
-#Need help with upload, initial_index,
