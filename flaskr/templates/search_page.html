@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+{% include 'navigation_bar.html' %}
 <html>
 <head>
     <title>Search Results</title>
+    <link rel="stylesheet" href="../static/main.css">
 </head>
 <body>
+    <h1> Recipe Search Results are:</h1>
+    <p> </p>
     {%for recipe in results%}
     <li class = ""> 
         <a href="/pages/{{recipe}}">{{recipe}}</a>
