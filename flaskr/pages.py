@@ -142,9 +142,10 @@ def make_endpoints(app, backend, logging):
 
     @app.route("/wiki_page/search", methods=["POST"])
     def search_display():
+        settings = backend.get_current_settings()
         search_term = request.form["search"]
         results = backend.search(search_term)
-        return render_template("search_page.html", results=results)
+        return render_template("search_page.html", results=results, settings = settings)
 
     @app.route("/pages/<page_id>/rating", methods=["POST"])
     def rating(page_id):
