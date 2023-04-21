@@ -41,14 +41,14 @@ def make_endpoints(app, backend, logging):
                                page_id=page_id,
                                average_rating=average_rating)
 
-    # TODO test route
-    @app.route("/pages/<page_id>")
-    def bookmark_page(page_id):
-        backend.update_bookmarks(page_id)
-        #call get_wiki_page from backend to get the respective page data depending on page_id
-        page_data = backend.get_wiki_page(page_id, current_user)
+    # # TODO test route
+    # @app.route("/pages/<page_id>")
+    # def bookmark_page(page_id):
+    #     backend.update_bookmarks(page_id)
+    #     #call get_wiki_page from backend to get the respective page data depending on page_id
+    #     page_data = backend.get_wiki_page(page_id, current_user)
 
-        return render_template('wiki_page.html', page_data=page_data)
+    #     return render_template('wiki_page.html', page_data=page_data)
 
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])

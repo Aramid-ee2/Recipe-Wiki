@@ -31,7 +31,7 @@ class Backend:
         else:
             preffered_language = 'English'
 
-        blobs = self.wiki_info_bucket.blob(prefix=preffered_language + '/')
+        blob = self.wiki_info_bucket.list_blobs(preffered_language + '/')
         with blob.open("r") as f:
             data = f.read()
             return data
