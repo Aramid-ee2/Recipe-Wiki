@@ -145,7 +145,9 @@ def make_endpoints(app, backend, logging):
         settings = backend.get_current_settings()
         search_term = request.form["search"]
         results = backend.search(search_term)
-        return render_template("search_page.html", results=results, settings = settings)
+        return render_template("search_page.html",
+                               results=results,
+                               settings=settings)
 
     @app.route("/pages/<page_id>/rating", methods=["POST"])
     def rating(page_id):
