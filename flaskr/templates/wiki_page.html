@@ -1,10 +1,10 @@
 {% extends 'navigation_bar.html' %}
 {% block page_name %}
-{{page_id}}
+{Recipe}
 {% endblock %}
 {% block content %}
     {% if current_user.is_authenticated %}
-        <form action="/wiki_page/bookmark">
+        <form action="/wiki_page/bookmark" method="POST">
             <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
             <label for="bookmark"> Bookmark this page</label><br>
             <input type="submit" value="Submit">
