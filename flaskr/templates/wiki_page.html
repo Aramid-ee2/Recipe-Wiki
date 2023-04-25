@@ -3,6 +3,14 @@
 {page_id}
 {% endblock %}
 {% block content %}
+    {% if current_user.is_authenticated %}
+        <form action="/wiki_page/bookmark">
+            <input type="checkbox" id="bookmark" name="bookmark" value="bookmark">
+            <label for="bookmark"> Bookmark this page</label><br>
+            <input type="submit" value="Submit">
+        </form>
+        {% endif %}
+        <br>
     <div class = "container"> 
         <h3 class = "recipe_header">Submit a rating</h3>
         <form class = "recipe_form" action="/pages/{{page_id}}" method="POST">
