@@ -1,13 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ page_id }}</title>
-</head>
-<body>
-    {% include 'navigation_bar.html' %}
-    <div class = "container">
-        {% include 'bookmarks.html' %}
-    </div>
+{% extends 'navigation_bar.html' %}
+{% block page_name %}
+{page_id}
+{% endblock %}
+{% block content %}
     <div class = "container"> 
         <h3 class = "recipe_header">Submit a rating</h3>
         <form class = "recipe_form" action="/pages/{{page_id}}" method="POST">
@@ -21,5 +16,4 @@
     </div>
       
     {{ page_data | safe }}
-</body>
-</html>
+{% endblock %}

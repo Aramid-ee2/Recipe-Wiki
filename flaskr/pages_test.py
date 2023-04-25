@@ -142,7 +142,7 @@ def test_rating(client, mock_backend):
     assert response.location == "/pages/some_page"
 
 
-def tes_search(client, mock_backend):
+def test_search(client, mock_backend):
     response = client.post("/wiki_page/search", data={'search': 'rice'})
     mock_backend.search.return_value = {'jollof.html', 'shrimp_rice.html'}
     assert response.status_code == 200
