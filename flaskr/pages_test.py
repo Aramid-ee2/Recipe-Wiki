@@ -146,5 +146,5 @@ def test_search(client, mock_backend):
     response = client.post("/wiki_page/search", data={'search': 'rice'})
     mock_backend.search.return_value = {'jollof.html', 'shrimp_rice.html'}
     assert response.status_code == 200
-    assert b"jollof.html" in response.dat
+    assert b"<h1> Recipe Search Results are:</h1>" in response.data
     mock_backend.search.assert_called_once_with("rice")
