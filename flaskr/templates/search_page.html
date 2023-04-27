@@ -8,8 +8,12 @@
 <body>
     <h1> Recipe Search Results are:</h1>
     {%for recipe in results%}
-    <li class = ""> 
-        <a href="/pages/{{recipe}}">{{recipe}}</a>
-    </li>
+        {% if recipe %}
+            <li class = ""> 
+                <a href="/pages/{{recipe}}">{{recipe}}</a>
+            </li>
+        {% else %}
+            <p> Oops we currently don't have that</p>
+        {% endif %} 
  {% endfor %}
 </body>
