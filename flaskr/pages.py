@@ -45,12 +45,13 @@ def make_endpoints(app, backend, logging):
                                average_rating=average_rating,
                                settings=settings)
 
-    @app.route("/wiki_page/bookmark", methods=["PUT"])
+    @app.route("/wiki_page/bookmark", methods=["POST"])
     def bookmark_page():
         # Update bookmarks
         backend.update_bookmarks(request.form["bookmark"])
         settings = backend.get_current_settings()
-        return render_template('pages.html', settings=settings)
+        all_pages = backend.get_all_page_names(current_user)
+        return render_template('pages.html', result=all_pages, settings=settings)
 
     # Sign up Route
     @app.route("/sign_up", methods=['GET', 'POST'])
